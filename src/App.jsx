@@ -17,13 +17,22 @@ function App() {
     }
   };
 
+  const goToPreviousStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
   return (
     <div className="app">
-      <Navbar currentStep={currentStep} />
+      <Navbar
+        currentStep={currentStep}
+        onNext={goToNextStep}
+        onPrevious={goToPreviousStep}
+      />
       <div className="flex w-full items-center justify-center">
         {steps[currentStep]}
       </div>
-      <button onClick={goToNextStep}>Next Step</button>
     </div>
   );
 }
