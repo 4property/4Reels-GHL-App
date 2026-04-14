@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useAudioRecorder } from "../hooks/useAudioRecorder";
+import { useAudioRecorder } from "../../hooks/useAudioRecorder";
 
 export default function AudioRecorder({ isRunning }) {
   const { isRecording, audioUrl, startRecording, stopRecording } =

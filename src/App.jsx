@@ -1,12 +1,29 @@
 import "./App.css";
-import ReelRecorder from "./components/ReelRecorder";
+import { Navbar } from "./components/Navbar";
+import ReelChoice from "./components/step-1/ReelChoice";
+import ReelCustomisation from "./components/step-2/ReelCustomisation";
+import ReelRecorder from "./components/step-3/ReelRecorder";
+
+import { useState } from "react";
 
 function App() {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const steps = [<ReelChoice />, <ReelCustomisation />, <ReelRecorder />];
+
+  const goToNextStep = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
   return (
     <div className="app">
+      <Navbar currentStep={currentStep} />
       <div className="flex w-full items-center justify-center">
-        <ReelRecorder />
+        {steps[currentStep]}
       </div>
+      <button onClick={goToNextStep}>Next Step</button>
     </div>
   );
 }

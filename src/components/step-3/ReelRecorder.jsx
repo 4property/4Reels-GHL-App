@@ -1,7 +1,6 @@
 import VideoPlayer from "./VideoPlayer";
 import AudioRecorder from "./AudioRecorder";
 
-// import { useState, useRef } from "react"; --- IGNORE ---
 import { useState } from "react";
 
 export default function ReelRecorder() {
