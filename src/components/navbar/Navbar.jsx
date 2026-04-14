@@ -21,9 +21,13 @@ function Navbar({ currentStep, onNext, onPrevious, stepNumber }) {
           </React.Fragment>
         ))}
       </div>
-      <div className="*:rounded-full *:bg-blue-950 *:text-white *:px-4 *:py-2 *:cursor-pointer disabled:*:opacity-50 disabled:*:cursor-not-allowed flex">
-        <button onClick={onPrevious}>Previous</button>
-        <button onClick={onNext}>Next</button>
+      <div className="*:rounded-full *:bg-blue-950 *:text-white *:px-4 *:py-2 *:cursor-pointer *:disabled:opacity-50 *:disabled:cursor-auto flex">
+        <button onClick={onPrevious} disabled={currentStep === 0}>
+          Previous
+        </button>
+        <button onClick={onNext} disabled={currentStep === stepNumber - 1}>
+          Next
+        </button>
       </div>
     </nav>
   );

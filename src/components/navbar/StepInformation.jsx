@@ -2,7 +2,7 @@ import React from "react";
 
 export function StepInformation({ currentStep, status }) {
   const baseClassName =
-    "w-14 h-14 flex items-center justify-center rounded-full border-4 font-bold";
+    "w-16 h-16 flex items-center justify-center rounded-full border-4 font-bold";
 
   const statusClasses = {
     completed: "bg-white border-blue-950 text-blue-950",
