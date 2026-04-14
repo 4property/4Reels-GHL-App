@@ -24,7 +24,7 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <div className="p-5">
       <Navbar
         currentStep={currentStep}
         onNext={goToNextStep}
