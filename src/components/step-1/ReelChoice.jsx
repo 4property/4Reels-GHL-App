@@ -5,6 +5,7 @@ import React, { useState } from "react";
 export default function ReelChoice() {
   const [isToggled1, setIsToggled1] = useState(false);
   const [isToggled2, setIsToggled2] = useState(false);
+
   const videoData = [
     // Just placeholder data for now, replace with actual API data when available
     {src: "src/assets/video.mp4", title: "Video 1", id: 1},
@@ -18,8 +19,9 @@ export default function ReelChoice() {
     {src: "src/assets/video.mp4", title: "Video 9", id: 9},
     
   ]; // This will hold the video data fetched from the API
+  const [selectedVideo, setSelectedVideo] = useState(videoData[0]); // State to hold the currently selected video, initialized to the first video in the list
   const handleVideoClick = (video) => {
-  console.log("Clicked video", video);
+    setSelectedVideo(video); // Update the selected video when a video is clicked
   };
   
 
@@ -42,7 +44,7 @@ export default function ReelChoice() {
       <div className="w-2/5">
         <h2 className="p-2 m-4">Current Reel/Poster:</h2>
         <div className="w-full h-auto p-2 m-4 flex justify-center items-center">
-          <video className="w-60 px-1 py-1" src="src/assets/video.mp4" title="Current Reel" controls />
+          <video key={selectedVideo.id} className="w-60 px-1 py-1" src={selectedVideo.src} title={selectedVideo.title} controls />
         </div>
         <label className="inline-flex items-center cursor-pointer p-2 m-4 w-full">
           <span className="ml-3 text-sm font-medium text-gray-900 w-8/10">
