@@ -6,20 +6,22 @@ export default function ReelChoice() {
   const [isToggled1, setIsToggled1] = useState(false);
   const [isToggled2, setIsToggled2] = useState(false);
 
-  const videoData = [
+  const mediaData = [
     // Just placeholder data for now, replace with actual API data when available
-    {src: "src/assets/video.mp4", title: "Video 1", id: 1},
-    {src: "src/assets/video.mp4", title: "Video 2", id: 2},
-    {src: "src/assets/video.mp4", title: "Video 3", id: 3},
-    {src: "src/assets/video.mp4", title: "Video 4", id: 4},
-    {src: "src/assets/video.mp4", title: "Video 5", id: 5},
-    {src: "src/assets/video.mp4", title: "Video 6", id: 6},
-    {src: "src/assets/video.mp4", title: "Video 7", id: 7},
-    {src: "src/assets/video.mp4", title: "Video 8", id: 8},
-    {src: "src/assets/video.mp4", title: "Video 9", id: 9},
-    
+    {src: "src/assets/video.mp4", title: "Video 1", id: 1, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 2", id: 2, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 3", id: 3, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 4", id: 4, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 5", id: 5, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 6", id: 6, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 7", id: 7, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 8", id: 8, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 9", id: 9, type: "video"},
+    {src: "src/assets/20-balally-close-dundrum-d16-k030-poster.jpg", title: "Poster 1", id: 10, type: "image"},
+    {src: "src/assets/20-balally-close-dundrum-d16-k030-poster.jpg", title: "Poster 2", id: 11, type: "image"},
+    {src: "src/assets/20-balally-close-dundrum-d16-k030-poster.jpg", title: "Poster 3", id: 12, type: "image"},
   ]; // This will hold the video data fetched from the API
-  const [selectedVideo, setSelectedVideo] = useState(videoData[0]); // State to hold the currently selected video, initialized to the first video in the list
+  const [selectedVideo, setSelectedVideo] = useState(mediaData[0]); // State to hold the currently selected video, initialized to the first video in the list
   const handleVideoClick = (video) => {
     setSelectedVideo(video); // Update the selected video when a video is clicked
   };
@@ -33,9 +35,13 @@ export default function ReelChoice() {
         <h2>Scheduled videos and posters:</h2>
         <div className="w-full max-h-140 overflow-y-auto border border-slate-200 rounded-xl p-4 m-4">
           <ul className="w-full h-auto flex gap-4 flex-wrap justify-center px-2 py-2">
-            {videoData.map((video) => (
-              <li className="w-40 cursor-pointer hover:border hover:border-blue-950 hover:bg-slate-50" key={video.id} onClick={() => handleVideoClick(video)}>
-                <video src={video.src} title={video.title} />
+            {mediaData.map((media) => (
+              <li className="w-40 cursor-pointer hover:border hover:border-blue-950 hover:bg-slate-50" key={media.id} onClick={() => handleVideoClick(media)}>
+                {media.type === 'video' ? (
+                  <video src={media.src} title={media.title} />
+                ) : (
+                  <img src={media.src} alt={media.title} title={media.title} />
+                )}
               </li>
             ))}
           </ul>
@@ -44,7 +50,11 @@ export default function ReelChoice() {
       <div className="w-2/5">
         <h2 className="p-2 m-4">Current Reel/Poster:</h2>
         <div className="w-full h-auto p-2 m-4 flex justify-center items-center">
-          <video key={selectedVideo.id} className="w-60 px-1 py-1" src={selectedVideo.src} title={selectedVideo.title} controls />
+          {selectedVideo.type === 'video' ? (
+            <video key={selectedVideo.id} className="w-60 px-1 py-1" src={selectedVideo.src} title={selectedVideo.title} controls />
+          ) : (
+            <img src={selectedVideo.src} alt={selectedVideo.title} title={selectedVideo.title} className="w-45 px-1 py-1"/>
+          )}
         </div>
         <label className="inline-flex items-center cursor-pointer p-2 m-4 w-full">
           <span className="ml-3 text-sm font-medium text-gray-900 w-8/10">
