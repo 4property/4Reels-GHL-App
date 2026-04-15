@@ -12,14 +12,15 @@ export default function ReelChoice() {
     {src: "src/assets/video.mp4", title: "Video 2", id: 2, type: "video"},
     {src: "src/assets/video.mp4", title: "Video 3", id: 3, type: "video"},
     {src: "src/assets/video.mp4", title: "Video 4", id: 4, type: "video"},
-    {src: "src/assets/video.mp4", title: "Video 5", id: 5, type: "video"},
-    {src: "src/assets/video.mp4", title: "Video 6", id: 6, type: "video"},
-    {src: "src/assets/video.mp4", title: "Video 7", id: 7, type: "video"},
-    {src: "src/assets/video.mp4", title: "Video 8", id: 8, type: "video"},
-    {src: "src/assets/video.mp4", title: "Video 9", id: 9, type: "video"},
-    {src: "src/assets/20-balally-close-dundrum-d16-k030-poster.jpg", title: "Poster 1", id: 10, type: "image"},
+    {src: "src/assets/20-balally-close-dundrum-d16-k030-poster.jpg", title: "Poster 1", id: 5, type: "image"},
+    {src: "src/assets/video.mp4", title: "Video 5", id: 6, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 6", id: 7, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 7", id: 8, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 8", id: 9, type: "video"},
+    {src: "src/assets/video.mp4", title: "Video 9", id: 10, type: "video"},
     {src: "src/assets/20-balally-close-dundrum-d16-k030-poster.jpg", title: "Poster 2", id: 11, type: "image"},
     {src: "src/assets/20-balally-close-dundrum-d16-k030-poster.jpg", title: "Poster 3", id: 12, type: "image"},
+    {src: "src/assets/20-balally-close-dundrum-d16-k030-poster.jpg", title: "Poster 4", id: 13, type: "image"},
   ]; // This will hold the video data fetched from the API
   const [selectedVideo, setSelectedVideo] = useState(mediaData[0]); // State to hold the currently selected video, initialized to the first video in the list
   const handleVideoClick = (video) => {
@@ -38,9 +39,9 @@ export default function ReelChoice() {
             {mediaData.map((media) => (
               <li className="w-40 cursor-pointer hover:border hover:border-blue-950 hover:bg-slate-50" key={media.id} onClick={() => handleVideoClick(media)}>
                 {media.type === 'video' ? (
-                  <video src={media.src} title={media.title} />
+                  <video src={media.src} title={media.title} className="rounded"/>
                 ) : (
-                  <img src={media.src} alt={media.title} title={media.title} />
+                  <img src={media.src} alt={media.title} title={media.title} className="rounded"/>
                 )}
               </li>
             ))}
@@ -51,9 +52,11 @@ export default function ReelChoice() {
         <h2 className="p-2 m-4">Current Reel/Poster:</h2>
         <div className="w-full h-auto p-2 m-4 flex justify-center items-center">
           {selectedVideo.type === 'video' ? (
-            <video key={selectedVideo.id} className="w-60 px-1 py-1" src={selectedVideo.src} title={selectedVideo.title} controls />
+            <div className="rounded-lg overflow-hidden px-1 py-1">
+              <video key={selectedVideo.id} className="w-60 rounded-lg" src={selectedVideo.src} title={selectedVideo.title} controls />
+            </div>
           ) : (
-            <img src={selectedVideo.src} alt={selectedVideo.title} title={selectedVideo.title} className="w-45 px-1 py-1"/>
+            <img src={selectedVideo.src} alt={selectedVideo.title} title={selectedVideo.title} className="w-45 px-1 py-1 rounded-lg"/>
           )}
         </div>
         <label className="inline-flex items-center cursor-pointer p-2 m-4 w-full">
@@ -92,9 +95,6 @@ export default function ReelChoice() {
             }`}></span>
           </div>
         </label>
-        <button className="bg-blue-950 text-white font-bold py-2 px-4 rounded-full m-4 w-4/5 float-right items-center flex justify-center gap-2">
-          Go to Upload Page <CircleArrowRight />
-        </button>
       </div>
     </div>
 
