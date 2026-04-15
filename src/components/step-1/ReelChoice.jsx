@@ -75,6 +75,9 @@ export default function ReelChoice() {
             }`}></span>
           </div>
         </label>
+        <button className="bg-blue-950 text-white font-bold py-2 px-4 rounded-full m-4 w-4/5 float-right">
+          Go to Upload Page
+        </button>
       </div>
     </div>
 
