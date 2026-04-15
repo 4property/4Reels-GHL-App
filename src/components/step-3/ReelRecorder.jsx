@@ -31,24 +31,27 @@ export default function ReelRecorder() {
 
   return (
     <>
-      <VideoPlayer isRunning={isStartRequested && isRecording} />
-      <AudioRecorder
-        audioExtension={audioExtension}
-        audioUrl={audioUrl}
-        error={error}
-        isPreparing={isPreparing}
-        isRecording={isRecording}
-      />
-      <button
-        onClick={handleToggle}
-        className={
-          isStartRequested
-            ? "bg-red-500 text-white px-4 py-2 rounded"
-            : "bg-green-500 text-white px-4 py-2 rounded"
-        }
-      >
-        {isStartRequested ? "Stop" : "Start"}
-      </button>
+      <h1 className="text-5xl text-blue-950 self-start">Reel Recorder</h1>
+      <div className="flex flex-col items-center w-fit">
+        <VideoPlayer isRunning={isStartRequested && isRecording} />
+        <AudioRecorder
+          audioExtension={audioExtension}
+          audioUrl={audioUrl}
+          error={error}
+          isPreparing={isPreparing}
+          isRecording={isRecording}
+        />
+        <button
+          onClick={handleToggle}
+          className={
+            isStartRequested
+              ? "bg-red-500 text-white px-4 py-2 rounded"
+              : "bg-green-500 text-white px-4 py-2 rounded"
+          }
+        >
+          {isStartRequested ? "Stop" : "Start"}
+        </button>
+      </div>
     </>
   );
 }
