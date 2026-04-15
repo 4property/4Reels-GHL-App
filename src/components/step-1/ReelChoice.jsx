@@ -18,6 +18,10 @@ export default function ReelChoice() {
     {src: "src/assets/video.mp4", title: "Video 9", id: 9},
     
   ]; // This will hold the video data fetched from the API
+  const handleVideoClick = (video) => {
+  console.log("Clicked video", video);
+  };
+  
 
   return (
     <div className="flex">
@@ -28,7 +32,7 @@ export default function ReelChoice() {
         <div className="w-full max-h-140 overflow-y-auto border border-slate-200 rounded-xl p-4 m-4">
           <ul className="w-full h-auto flex gap-4 flex-wrap justify-center px-2 py-2">
             {videoData.map((video) => (
-              <li className="w-40" key={video.id}>
+              <li className="w-40 cursor-pointer hover:border hover:border-blue-950 hover:bg-slate-50" key={video.id} onClick={() => handleVideoClick(video)}>
                 <video src={video.src} title={video.title} />
               </li>
             ))}
@@ -38,7 +42,7 @@ export default function ReelChoice() {
       <div className="w-2/5">
         <h2 className="p-2 m-4">Current Reel/Poster:</h2>
         <div className="w-full h-auto p-2 m-4 flex justify-center items-center">
-          <video className="w-50 px-1 py-1" src="src/assets/video.mp4" title="Current Reel" controls />
+          <video className="w-60 px-1 py-1" src="src/assets/video.mp4" title="Current Reel" controls />
         </div>
         <label className="inline-flex items-center cursor-pointer p-2 m-4 w-full">
           <span className="ml-3 text-sm font-medium text-gray-900 w-8/10">
