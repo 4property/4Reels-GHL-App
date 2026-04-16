@@ -37,11 +37,7 @@ function App() {
         onPrevious={goToPreviousStep}
         stepNumber={steps.length}
       />
-      <div className="flex-1 min-h-0">
-        <div className="h-full flex items-center justify-center">
-          {steps[currentStep]}
-        </div>
-      </div>
+      <div className="flex-1 min-h-0">{steps[currentStep]}</div>
     </div>
   );
 }
