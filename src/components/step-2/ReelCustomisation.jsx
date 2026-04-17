@@ -31,7 +31,7 @@ export default function ReelCustomisation() {
   }
 
   // started implementing drag and drop functionality, but stopped, because we need to connect to server for it to work, doesnt make sense to try doing it beforehand, as we would need to change it anyway when connecting to the server
-  function handleDragOverAudio(e) {
+  function handleDragOver(e) {
     e.preventDefault();
   }
   function handleDropAudio(e) {
@@ -51,9 +51,6 @@ export default function ReelCustomisation() {
       }
     });
   }
-  function handleDragOverMedia(e) {
-    e.preventDefault();
-  }
   function handleDropMedia(e) {
     e.preventDefault();
 
@@ -71,6 +68,47 @@ export default function ReelCustomisation() {
       }
     });
   }
+  const [draggedIndex, setDraggedIndex] = useState(null);
+  function handleDragStart(e, index) {
+  setDraggedIndex(index);
+
+  const dragPreview = document.createElement("div");
+  dragPreview.textContent = mediaData[index].title;
+    dragPreview.style.backgroundColor = "rgba(255, 255, 255, 0.7)";
+    dragPreview.style.width = "80px";
+    dragPreview.style.height = "120px";
+    dragPreview.style.display = "flex";
+    dragPreview.style.alignItems = "center";
+    dragPreview.style.justifyContent = "center";
+    dragPreview.style.border = "1px solid #ccc";
+    dragPreview.style.borderRadius = "8px";
+    dragPreview.style.fontSize = "14px";
+
+    document.body.appendChild(dragPreview);
+    e.dataTransfer.setDragImage(dragPreview, 60, 90);
+
+    requestAnimationFrame(() => {
+      document.body.removeChild(dragPreview);
+    });
+  }
+
+
+  function handleDropOnItem(dropIndex) {
+    if (draggedIndex === null || draggedIndex === dropIndex) return;
+
+    setMediaData((prev) => {
+      const updated = [...prev];
+      const [movedItem] = updated.splice(draggedIndex, 1);
+      updated.splice(dropIndex, 0, movedItem);
+      return updated;
+    });
+
+    setDraggedIndex(null);
+  }
+
+  function handleDragEnd() {
+    setDraggedIndex(null);
+  }
 
   return (
     <div className="flex">
@@ -85,13 +123,18 @@ export default function ReelCustomisation() {
                   key={media.id}
                   className={`rounded-xl cursor-pointer overflow-hidden hover:z-100 hover:duration-200 hover:scale-105 ${index !== 0 ? "-ml-40" : ""}`}
                   // style={{ zIndex: index }}
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={handleDragOver} 
+                  onDrop={() => handleDropOnItem(index)}
+                  onDragEnd={handleDragEnd}
+                  draggable
                 >
                   <video src={media.src} title={media.title} className=" object-cover" />
                 </div>
               ))}
             </div>
           </div>
-          <div className="w-full p-2 flex flex-1 flex-col items-center border border-slate-200 rounded-xl" onDragOver={handleDragOverMedia} onDrop={handleDropMedia}>
+          <div className="w-full p-2 flex flex-1 flex-col items-center border border-slate-200 rounded-xl" onDragOver={handleDragOver} onDrop={handleDropMedia}>
             <p className="flex h-full items-center">Upload your own Images or Videos</p>
             <span className="flex flex-col h-full items-center gap-2">
               <GoPlusCircle />
@@ -119,7 +162,7 @@ export default function ReelCustomisation() {
               </ul>
             </div>
           </div>
-          <div className="w-full p-2 flex flex-1 flex-col items-center border border-slate-200 rounded-xl" onDragOver={handleDragOverAudio} onDrop={handleDropAudio}>
+          <div className="w-full p-2 flex flex-1 flex-col items-center border border-slate-200 rounded-xl" onDragOver={handleDragOver} onDrop={handleDropAudio}>
             <p className="flex h-full items-center">Upload your Music</p>
             <span className="flex flex-col h-full items-center gap-2">
               <GoPlusCircle />
