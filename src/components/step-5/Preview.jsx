@@ -32,13 +32,13 @@ export default function Preview({ goToStep }) {
             <p className="mr-auto p-2">(Test) 3</p>
           </div>
           <Button >
-              <span className="flex items-center gap-2">
+              <span className="w-50 flex items-center justify-between gap-2">
                 Upload now
                 <MdOutlineFileUpload />
               </span>
           </Button>
           <Button >
-            <span className="flex items-center gap-2">
+            <span className=" w-50 flex items-center justify-between gap-2">
               <p >Schedule upload</p>
               <FiClock />
             </span>
