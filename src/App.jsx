@@ -15,11 +15,7 @@ function App() {
   const goToStep = (stepIndex) => {
     setCurrentStep(stepIndex);
   };
-
-  const goToStep = (stepIndex) => {
-    setCurrentStep(stepIndex);
-  };
-
+  
   const steps = [
     <ReelChoice />,
     <ReelCustomisation />,
