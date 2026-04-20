@@ -10,6 +10,10 @@ import { useState } from "react";
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
 
+  const goToStep = (stepIndex) => {
+    setCurrentStep(stepIndex);
+  };
+
   const steps = [
     <ReelChoice />,
     <ReelCustomisation />,
