@@ -1,4 +1,10 @@
 import './style.css'
+import bathroomPhoto from '../selected_photos/04_3483-13.jpg'
+import bedroomPhoto from '../selected_photos/03_3483-17.jpg'
+import exteriorPhoto from '../selected_photos/05_3483-2.jpg'
+import greenPhoto from '../selected_photos/01_3483-21.jpg'
+import kitchenPhoto from '../selected_photos/02_3483-10.jpg'
+import livingPhoto from '../selected_photos/primary_image.jpg'
 
 const app = document.querySelector('#app')
 
@@ -67,12 +73,12 @@ const dateFormats = [
 ]
 
 const photoAssets = {
-  exterior: '/selected_photos/05_3483-2.jpg',
-  living: '/selected_photos/primary_image.jpg',
-  green: '/selected_photos/01_3483-21.jpg',
-  kitchen: '/selected_photos/02_3483-10.jpg',
-  bedroom: '/selected_photos/03_3483-17.jpg',
-  bathroom: '/selected_photos/04_3483-13.jpg',
+  exterior: exteriorPhoto,
+  living: livingPhoto,
+  green: greenPhoto,
+  kitchen: kitchenPhoto,
+  bedroom: bedroomPhoto,
+  bathroom: bathroomPhoto,
 }
 
 let nextId = 100
