@@ -10,13 +10,18 @@ import Preview from "./components/step-5/Preview";
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
+  // added to make the buttons "go back to ..." in the Rewiew step (if you have another idea how to do this, you can change this)
+
+  const goToStep = (stepIndex) => {
+    setCurrentStep(stepIndex);
+  };
 
   const steps = [
     <ReelChoice />,
     <ReelCustomisation />,
     <ReelRecorder />,
     <SocialEditPage />,
-    <Preview />,
+    <Preview goToStep={goToStep} />,
   ];
 
   const goToNextStep = () => {

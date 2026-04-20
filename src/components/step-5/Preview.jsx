@@ -4,7 +4,7 @@ import Button from "../utils/Button";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { FiClock } from "react-icons/fi";
 
-export default function Preview() {
+export default function Preview({ goToStep }) {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Preview</h1>
@@ -13,8 +13,23 @@ export default function Preview() {
           <video src={videoFile} controls className="rounded-xl" />
         </div>
         <div className="flex flex-col items-end justify-center gap-4">
-          <div className="w-100 h-auto rounded-xl bg-gray-200 flex flex-col items-center justify-center">
+          <div className="w-full h-auto rounded bg-gray-200 flex flex-col items-center justify-center">
             <p className="text-gray-500 flex">Preview Area</p>
+            <div className="flex items-center justify-between w-full p-4 gap-4">
+              <p className="flex flex-1 bg-white p-2 gap-2 rounded">Reel Customization Changes</p>
+              <Button className="flex" onClick={()=> goToStep(1)}>Go back to Customization Page</Button>
+            </div>
+            <p className="mr-auto p-2">(Test) 3</p>
+            <div className="flex items-center justify-between w-full p-4 gap-4">
+              <p className="flex flex-1 bg-white p-2 gap-2 rounded">Voice-Over Changes</p>
+              <Button className="flex" onClick={()=> goToStep(2)}>Go back to Voice-Over Page</Button>
+            </div>
+            <p className="mr-auto p-2">(Test) 3</p>
+            <div className="flex items-center justify-between w-full p-4 gap-4">
+              <p className="flex flex-1 bg-white p-2 gap-2 rounded">Social Changes</p>
+              <Button className="flex" onClick={()=> goToStep(3)}>Go back to Social Page</Button>
+            </div>
+            <p className="mr-auto p-2">(Test) 3</p>
           </div>
           <Button >
               <span className="flex items-center gap-2">
