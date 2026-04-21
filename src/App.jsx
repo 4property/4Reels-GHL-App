@@ -18,7 +18,7 @@ function App() {
     setCurrentStep(stepIndex);
   };
 
-  const skippedSteps = isToggledDefaultReel ? [0, 1, 2] : [];
+  const skippedSteps = isToggledDefaultReel ? [1, 2] : [];
 
   const steps = [
     <ReelChoice isToggledDefaultReel={isToggledDefaultReel} setIsToggledDefaultReel={setIsToggledDefaultReel} />,

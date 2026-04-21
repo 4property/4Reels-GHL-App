@@ -2,9 +2,9 @@ import React from "react";
 import { StepInformation } from "./StepInformation";
 
 function getStepStatus(index, currentStep, skippedSteps) {
-  if (index < currentStep) return "completed";
   if (index === currentStep) return "active";
-  if (skippedSteps !== undefined && skippedSteps.includes(index) && index > currentStep) return "skipped";
+  if (skippedSteps && skippedSteps.includes(index)) return "skipped";
+  if (index < currentStep) return "completed";
   return "pending";
 }
 
