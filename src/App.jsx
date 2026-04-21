@@ -17,7 +17,7 @@ function App() {
   const goToStep = (stepIndex) => {
     setCurrentStep(stepIndex);
   };
-
+  // must be changed, when step 5 is added, because it now just skips to step4
   const skippedSteps = isToggledDefaultReel ? [1, 2] : [];
 
   const steps = [
@@ -30,6 +30,7 @@ function App() {
   const goToNextStep = () => {
      //Logic for skipping steps 1-4 if the default reel toggle is on, but as step 5 is doesn't exist on this branch, it hast o be commented out for the moment
      if(isToggledDefaultReel){
+      //must be change to 4 when step 5 is added
        setCurrentStep(3);
        return
      }
