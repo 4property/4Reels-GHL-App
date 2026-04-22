@@ -4,7 +4,7 @@ import Button from "../utils/Button";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { FiClock } from "react-icons/fi";
 
-export default function Preview({ goToStep }) {
+export default function Preview({ goToStep, reviewSteps }) {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Preview</h1>
@@ -15,31 +15,29 @@ export default function Preview({ goToStep }) {
         <div className="flex flex-col items-end justify-center gap-4">
           <div className="w-full h-auto rounded bg-gray-200 flex flex-col items-center justify-center">
             <p className="text-gray-500 flex">Preview Area</p>
-            <div className="flex items-center justify-between w-full p-4 gap-4">
-              <p className="flex flex-1 bg-white p-2 gap-2 rounded">Reel Customization Changes</p>
-              <Button className="flex" onClick={()=> goToStep(1)}>Go back to Customization Page</Button>
-            </div>
-            <p className="mr-auto p-2">(Test) 3</p>
-            <div className="flex items-center justify-between w-full p-4 gap-4">
-              <p className="flex flex-1 bg-white p-2 gap-2 rounded">Voice-Over Changes</p>
-              <Button className="flex" onClick={()=> goToStep(2)}>Go back to Voice-Over Page</Button>
-            </div>
-            <p className="mr-auto p-2">(Test) 3</p>
-            <div className="flex items-center justify-between w-full p-4 gap-4">
-              <p className="flex flex-1 bg-white p-2 gap-2 rounded">Social Changes</p>
-              <Button className="flex" onClick={()=> goToStep(3)}>Go back to Social Page</Button>
-            </div>
-            <p className="mr-auto p-2">(Test) 3</p>
+            {reviewSteps.map((step) => (
+              <React.Fragment key={step.id}>
+                <div className="flex items-center justify-between w-full p-4 gap-4">
+                  <p className="flex flex-1 bg-white p-2 gap-2 rounded">
+                    {step.title}
+                  </p>
+                  <Button className="flex" onClick={() => goToStep(step.id)}>
+                    {step.buttonLabel}
+                  </Button>
+                </div>
+                <p className="mr-auto p-2">(Test) 3</p>
+              </React.Fragment>
+            ))}
           </div>
-          <Button >
-              <span className="w-50 flex items-center justify-between gap-2">
-                Upload now
-                <MdOutlineFileUpload />
-              </span>
+          <Button>
+            <span className="w-50 flex items-center justify-between gap-2">
+              Upload now
+              <MdOutlineFileUpload />
+            </span>
           </Button>
-          <Button >
+          <Button>
             <span className=" w-50 flex items-center justify-between gap-2">
-              <p >Schedule upload</p>
+              <p>Schedule upload</p>
               <FiClock />
             </span>
           </Button>
