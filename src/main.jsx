@@ -3,6 +3,14 @@
 // Each component file declares its component and assigns it to window, so
 // the cross-file global references in the existing code keep resolving.
 import './globals.js';
+
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+
 import '../styles.css';
 
 import '../data/mock.js';
