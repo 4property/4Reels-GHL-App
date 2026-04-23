@@ -7,13 +7,11 @@ import {
   FaGoogle,
   FaPinterest,
 } from "react-icons/fa";
-import { 
-  FaSquareThreads,
-  FaSquareBluesky,
- } from "react-icons/fa6";
+import { FaSquareThreads, FaSquareBluesky } from "react-icons/fa6";
 import { AiFillInstagram } from "react-icons/ai";
 
 export default function SocialEditPage() {
+  const [activePlatformIndex, setActivePlatformIndex] = React.useState(0);
   const [socialMediaPlatforms, setSocialMediaPlatforms] = React.useState([
     {
       name: "YouTube",
@@ -68,55 +66,104 @@ export default function SocialEditPage() {
       icon: FaSquareBluesky,
       title: "My Bluesky title",
       description: "My Bluesky description",
-    }
+    },
   ]);
 
-  const handleChange = (index, field, value) => {
-    const updatedPlatforms = [...socialMediaPlatforms];
-    updatedPlatforms[index][field] = value;
-    setSocialMediaPlatforms(updatedPlatforms);
+  const handleChange = (field, value) => {
+    setSocialMediaPlatforms((platforms) =>
+      platforms.map((platform, index) =>
+        index === activePlatformIndex
+          ? {
+              ...platform,
+              [field]: value,
+            }
+          : platform,
+      ),
+    );
   };
+
+  const activePlatform = socialMediaPlatforms[activePlatformIndex];
+  const ActiveIcon = activePlatform.icon;
 
   return (
     // Still to do: add functionality, that shows, which social media account has yet to be connected through a highlight or something
-    
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Social Edit Page</h1>
 
-      <div className="border border-gray-300 rounded-lg p-4">
-        <div className="grid grid-cols-[1fr_2fr_2fr] gap-4 p-2 text-lg font-semibold">
-          <div>Social media</div>
-          <div>Change title</div>
-          <div>Change description</div>
+    <div className="h-full">
+      <div className="mb-6">
+        <h1 className="mt-2 text-3xl font-bold text-blue-950">
+          Edit your social captions
+        </h1>
+      </div>
+
+      <div className="rounded-3xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div
+          className="flex gap-2 overflow-x-auto border-b border-gray-200 pb-4"
+          role="tablist"
+          aria-label="Social media platforms"
+        >
+          {socialMediaPlatforms.map((platform, index) => {
+            const Icon = platform.icon;
+            const isActive = index === activePlatformIndex;
+
+            return (
+              <button
+                key={platform.name}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setActivePlatformIndex(index)}
+                className={`flex shrink-0 items-center gap-2 rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition ${
+                  isActive
+                    ? "border-blue-950 bg-blue-950 text-white shadow-md"
+                    : "border-gray-200 bg-gray-50 text-gray-700 hover:border-blue-950/30 hover:bg-white"
+                }`}
+              >
+                <Icon className="text-xl" />
+                <span>{platform.name}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {socialMediaPlatforms.map((platform, index) => (
-          <div
-            key={platform.name}
-            className="grid grid-cols-[1fr_2fr_2fr] gap-4 p-2 items-center border-t border-gray-200"
-          >
-            <div className="flex gap-2 items-center">
-              <platform.icon className="text-2xl" />
-              <span className="text-lg">{platform.name}</span>
+        <div className="mt-6 rounded-3xl">
+          <div className="mb-6 flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-3xl text-blue-950 shadow-sm">
+              <ActiveIcon />
             </div>
-
-            <input
-              type="text"
-              value={platform.title}
-              onChange={(e) => handleChange(index, "title", e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-950"
-            />
-
-            <input
-              type="text"
-              value={platform.description}
-              onChange={(e) =>
-                handleChange(index, "description", e.target.value)
-              }
-              className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-950"
-            />
+            <div>
+              <p className="text-sm font-medium text-gray-500">
+                Editing content for
+              </p>
+              <h2 className="text-2xl font-bold text-blue-950">
+                {activePlatform.name}
+              </h2>
+            </div>
           </div>
-        ))}
+
+          <div className="grid gap-5">
+            <label className="grid gap-2">
+              <span className="text-lg font-semibold text-gray-900">Title</span>
+              <input
+                type="text"
+                value={activePlatform.title}
+                onChange={(e) => handleChange("title", e.target.value)}
+                className="min-h-14 rounded-2xl border border-gray-300 bg-white px-5 py-4 text-lg text-gray-950 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-blue-950 focus:ring-4 focus:ring-blue-950/10"
+              />
+            </label>
+
+            <label className="grid gap-2">
+              <span className="text-lg font-semibold text-gray-900">
+                Description
+              </span>
+              <textarea
+                value={activePlatform.description}
+                onChange={(e) => handleChange("description", e.target.value)}
+                rows={7}
+                className="min-h-48 resize-y rounded-2xl border border-gray-300 bg-white px-5 py-4 text-lg leading-8 text-gray-950 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-blue-950 focus:ring-4 focus:ring-blue-950/10"
+              />
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   );
