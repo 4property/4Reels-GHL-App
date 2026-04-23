@@ -24,8 +24,8 @@ const Dashboard = ({ onOpenReel }) => {
   const metrics = [
     { label: "Reels this month", value: "142", delta: "+18", trend: "up" },
     { label: "Published", value: countBy("published"), delta: "+4", trend: "up" },
-    { label: "Needs approval", value: countBy("needs-approval"), delta: "—", trend: "flat" },
-    { label: "Rejected", value: countBy("rejected"), delta: "—", trend: "flat" },
+    { label: "Needs approval", value: countBy("needs-approval"), delta: "", trend: "flat" },
+    { label: "Rejected", value: countBy("rejected"), delta: "", trend: "flat" },
   ];
 
   return (
