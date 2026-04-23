@@ -5,48 +5,156 @@ import ReelCustomisation from "./components/step-2/ReelCustomisation";
 import ReelRecorder from "./components/step-3/ReelRecorder";
 import SocialEditPage from "./components/step-4/SocialEditPage";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Preview from "./components/step-5/Preview";
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
-
-  //functionality of the use default reel toggle switch, if you have a better idea where to put it change it
   const [isToggledDefaultReel, setIsToggledDefaultReel] = useState(false);
 
+  const steps = useMemo(
+    () => [
+      {
+        id: "reel-choice",
+        element: (
+          <ReelChoice
+            isToggledDefaultReel={isToggledDefaultReel}
+            setIsToggledDefaultReel={setIsToggledDefaultReel}
+          />
+        ),
+      },
+      {
+        id: "reel-customisation",
+        element: <ReelCustomisation />,
+        isSkipped: isToggledDefaultReel,
+        reviewTitle: "Reel Customization Changes",
+        reviewButtonLabel: "Go back to Customization Page",
+      },
+      {
+        id: "reel-recorder",
+        element: <ReelRecorder />,
+        isSkipped: isToggledDefaultReel,
+        reviewTitle: "Voice-Over Changes",
+        reviewButtonLabel: "Go back to Voice-Over Page",
+      },
+      {
+        id: "social-edit",
+        element: <SocialEditPage />,
+        isSkipped: isToggledDefaultReel,
+        reviewTitle: "Social Changes",
+        reviewButtonLabel: "Go back to Social Page",
+      },
+      {
+        id: "preview",
+        element: null,
+      },
+    ],
+    [isToggledDefaultReel],
+  );
+
+  const skippedSteps = useMemo(
+    () =>
+      steps.reduce((indexes, step, index) => {
+        if (step.isSkipped) {
+          indexes.push(index);
+        }
+
+        return indexes;
+      }, []),
+    [steps],
+  );
+
+  const findNextAvailableStep = (fromIndex) => {
+    for (let index = fromIndex + 1; index < steps.length; index += 1) {
+      if (!steps[index].isSkipped) {
+        return index;
+      }
+    }
+
+    return fromIndex;
+  };
+
+  const findPreviousAvailableStep = (fromIndex) => {
+    for (let index = fromIndex - 1; index >= 0; index -= 1) {
+      if (!steps[index].isSkipped) {
+        return index;
+      }
+    }
+
+    return fromIndex;
+  };
+
+  const getStepIndex = (stepId) =>
+    steps.findIndex((step) => step.id === stepId);
 
   const goToStep = (stepIndex) => {
+    if (
+      stepIndex < 0 ||
+      stepIndex >= steps.length ||
+      steps[stepIndex].isSkipped
+    ) {
+      return;
+    }
+
     setCurrentStep(stepIndex);
   };
   // must be changed, when step 5 is added, because it now just skips to step4
   const skippedSteps = isToggledDefaultReel ? [1, 2] : [];
 
-  const steps = [
-    <ReelChoice isToggledDefaultReel={isToggledDefaultReel} setIsToggledDefaultReel={setIsToggledDefaultReel} />,
-    <ReelCustomisation />,
-    <ReelRecorder />,
-    <SocialEditPage />,
-  ];
+  const goToStepById = (stepId) => {
+    const stepIndex = getStepIndex(stepId);
+    goToStep(stepIndex);
+  };
+
+  const reviewSteps = useMemo(
+    () =>
+      steps
+        .filter((step) => step.reviewTitle && !step.isSkipped)
+        .map((step) => ({
+          id: step.id,
+          title: step.reviewTitle,
+          buttonLabel: step.reviewButtonLabel,
+        })),
+    [steps],
+  );
+
+  const currentStepContent =
+    steps[currentStep].id === "preview" ? (
+      <Preview goToStep={goToStepById} reviewSteps={reviewSteps} />
+    ) : (
+      steps[currentStep].element
+    );
+
+  useEffect(() => {
+    if (steps[currentStep]?.isSkipped) {
+      const nextStepIndex = findNextAvailableStep(currentStep);
+
+      if (nextStepIndex !== currentStep) {
+        setCurrentStep(nextStepIndex);
+        return;
+      }
+
+      const previousStepIndex = findPreviousAvailableStep(currentStep);
+
+      if (previousStepIndex !== currentStep) {
+        setCurrentStep(previousStepIndex);
+      }
+    }
+  }, [currentStep, steps]);
 
   const goToNextStep = () => {
-     //Logic for skipping steps 1-4 if the default reel toggle is on, but as step 5 is doesn't exist on this branch, it hast o be commented out for the moment
-     if(isToggledDefaultReel){
-      //must be change to 4 when step 5 is added
-       setCurrentStep(3);
-       return
-     }
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+    const nextStepIndex = findNextAvailableStep(currentStep);
+
+    if (nextStepIndex !== currentStep) {
+      setCurrentStep(nextStepIndex);
     }
   };
 
   const goToPreviousStep = () => {
-     if(isToggledDefaultReel){
-       setCurrentStep(0);
-       return
-     }
-    
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+    const previousStepIndex = findPreviousAvailableStep(currentStep);
+
+    if (previousStepIndex !== currentStep) {
+      setCurrentStep(previousStepIndex);
     }
   };
 
@@ -59,7 +167,7 @@ function App() {
         stepNumber={steps.length}
         skippedSteps={skippedSteps}
       />
-      <div className="flex-1 min-h-0">{steps[currentStep]}</div>
+      <div className="flex-1 min-h-0">{currentStepContent}</div>
     </div>
   );
 }

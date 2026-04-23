@@ -47,33 +47,36 @@ export default function ReelRecorder() {
   }
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-8 xl:flex-row xl:gap-10">
-      <div className="flex h-[min(54vh,44rem)] w-full max-w-[22rem] items-center justify-center">
-        <VideoPlayer isRunning={isStartRequested && isRecording} />
-      </div>
+    <div>
+      <h1 className="text-2xl font-bold">Reel Recorder</h1>
+      <div className="flex h-full w-full flex-col items-center justify-center gap-8 xl:flex-row xl:gap-10">
+        <div className="flex h-[min(54vh,44rem)] w-full max-w-[22rem] items-center justify-center">
+          <VideoPlayer isRunning={isStartRequested && isRecording} />
+        </div>
 
-      <div className="flex w-full max-w-[28rem] flex-col gap-5">
-        <AudioRecorder
-          audioExtension={audioExtension}
-          audioUrl={audioUrl}
-          error={error}
-          frequencyBarCount={frequencyBarCount}
-          frequencyBarsRef={frequencyBarsRef}
-          isPreparing={isPreparing}
-          isRecording={isRecording}
-          visualizerScale={AUDIO_VISUALIZER_SCALE}
-        />
+        <div className="flex w-full max-w-[28rem] flex-col gap-5">
+          <AudioRecorder
+            audioExtension={audioExtension}
+            audioUrl={audioUrl}
+            error={error}
+            frequencyBarCount={frequencyBarCount}
+            frequencyBarsRef={frequencyBarsRef}
+            isPreparing={isPreparing}
+            isRecording={isRecording}
+            visualizerScale={AUDIO_VISUALIZER_SCALE}
+          />
 
-        <button
-          onClick={handleToggle}
-          className={`rounded-full border-2 px-5 py-3 text-sm font-semibold tracking-[0.2em] uppercase transition-colors ${
-            isStartRequested
-              ? "border-blue-950 bg-white text-blue-950"
-              : "border-blue-950 bg-blue-950 text-white"
-          }`}
-        >
-          {isStartRequested ? "Stop" : "Start"}
-        </button>
+          <button
+            onClick={handleToggle}
+            className={`rounded-full border-2 px-5 py-3 text-sm font-semibold tracking-[0.2em] uppercase transition-colors ${
+              isStartRequested
+                ? "border-blue-950 bg-white text-blue-950"
+                : "border-blue-950 bg-blue-950 text-white"
+            }`}
+          >
+            {isStartRequested ? "Stop" : "Start"}
+          </button>
+        </div>
       </div>
     </div>
   );
