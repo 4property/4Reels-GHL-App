@@ -52,8 +52,12 @@ export default function ReelChoice({
     <div className="flex flex-col md:flex-row gap-10 w-fit max-h-full">
       <div className="flex-3 flex flex-col">
         {/* <div className="">Reelchoice</div> */}
-        <h1 className="text-2xl font-bold mb-4">My Reels and Posters</h1>
-        <h2 className="text-lg font-semibold">Scheduled videos and posters:</h2>
+        <h1 className="text-3xl font-bold text-blue-950">
+          My Reels and Posters
+        </h1>
+        <p className="font-normal text-gray-600">
+          Scheduled videos and posters
+        </p>
         <div className="flex-1 min-h-0 overflow-y-auto border border-slate-200 rounded-xl p-4">
           <ul className="flex gap-4 flex-wrap justify-evenly px-2 py-2">
             {mediaData.map((media) => (

@@ -90,7 +90,7 @@ export default function SocialEditPage() {
 
     <div className="h-full">
       <div className="mb-6">
-        <h1 className="mt-2 text-3xl font-bold text-blue-950">
+        <h1 className="text-3xl font-bold text-blue-950">
           Edit your social captions
         </h1>
       </div>

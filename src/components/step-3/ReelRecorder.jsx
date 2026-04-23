@@ -48,7 +48,7 @@ export default function ReelRecorder() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Reel Recorder</h1>
+      <h1 className="text-3xl font-bold text-blue-950">Reel Recorder</h1>
       <div className="flex h-full w-full flex-col items-center justify-center gap-8 xl:flex-row xl:gap-10">
         <div className="flex h-[min(54vh,44rem)] w-full max-w-[22rem] items-center justify-center">
           <VideoPlayer isRunning={isStartRequested && isRecording} />

@@ -7,7 +7,7 @@ import { FiClock } from "react-icons/fi";
 export default function Preview({ goToStep, reviewSteps }) {
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Preview</h1>
+      <h1 className="text-3xl font-bold text-blue-950">Preview</h1>
       <div className="h-full flex items-center justify-evenly">
         <div className="w-100">
           <video src={videoFile} controls className="rounded-xl" />

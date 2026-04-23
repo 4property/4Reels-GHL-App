@@ -153,7 +153,7 @@ export default function ReelCustomisation() {
   return (
     <div className="flex">
       <div className="flex flex-col gap-4 *:gap-4">
-        <h1 className="text-2xl font-bold mb-4">Reel Customisation</h1>
+        <h1 className="text-3xl font-bold text-blue-950">Reel Customisation</h1>
         <div className=" flex">
           {/* The div for changing the order of the images */}
           <div className="w-full flex-2 p-2 flex border border-slate-200 rounded-xl">
