@@ -1,0 +1,53 @@
+/* Buttons + icon buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  transition: background 0.12s, border-color 0.12s;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--surface-hover); }
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+.btn.ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-muted);
+}
+.btn.ghost:hover { background: var(--bg-soft); color: var(--text); }
+
+.btn.danger {
+  color: var(--danger);
+  border-color: var(--border);
+}
+.btn.danger:hover { background: var(--danger-soft); }
+
+.btn.sm { height: 28px; padding: 0 10px; font-size: 12px; }
+.btn.lg { height: 40px; padding: 0 16px; font-size: 14px; }
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-sm);
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+}
+.icon-btn:hover { background: var(--bg-soft); color: var(--text); }

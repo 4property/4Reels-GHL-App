@@ -1,0 +1,111 @@
+/* Small, composable helpers used everywhere. Keep this file short — if
+ * something grows complex, promote it to its own module. */
+
+/* ── Flex / stack ──────────────────────────────────────────────────── */
+.row { display: flex; align-items: center; gap: var(--space-5); }
+.row-start { display: flex; align-items: flex-start; gap: var(--space-5); }
+.row-end { display: flex; align-items: flex-end; gap: var(--space-5); }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); }
+.row-wrap { flex-wrap: wrap; }
+
+.stack { display: flex; flex-direction: column; gap: var(--space-8); }
+.stack-sm { display: flex; flex-direction: column; gap: var(--space-4); }
+.stack-xs { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.grow { flex: 1; }
+.shrink-0 { flex-shrink: 0; }
+.min-w-0 { min-width: 0; }
+
+/* ── Gaps (override the default row/stack gap when needed) ─────────── */
+.gap-0 { gap: 0 !important; }
+.gap-1 { gap: var(--space-1) !important; }
+.gap-2 { gap: var(--space-2) !important; }
+.gap-3 { gap: var(--space-3) !important; }
+.gap-4 { gap: var(--space-4) !important; }
+.gap-5 { gap: var(--space-5) !important; }
+.gap-6 { gap: var(--space-6) !important; }
+.gap-8 { gap: var(--space-8) !important; }
+
+/* ── Text helpers (kept here for quick access; full set in typography.css) ─ */
+.muted { color: var(--text-muted); }
+.subtle { color: var(--text-subtle); }
+.mono { font-family: var(--font-mono); font-size: var(--fs-12); }
+
+/* ── Dividers ──────────────────────────────────────────────────────── */
+hr.sep { border: 0; border-top: 1px solid var(--divider); margin: var(--space-10) 0; }
+.divider-top { border-top: 1px solid var(--divider); }
+.divider-bottom { border-bottom: 1px solid var(--divider); }
+
+/* ── Keyboard hint ─────────────────────────────────────────────────── */
+.kbd {
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: var(--r-xs);
+  color: var(--text-muted);
+  background: var(--bg-soft);
+}
+
+/* ── Drag handle ───────────────────────────────────────────────────── */
+.drag-handle {
+  color: var(--text-subtle);
+  cursor: grab;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1);
+}
+.drag-handle:active { cursor: grabbing; }
+
+/* ── Scrollbar ─────────────────────────────────────────────────────── */
+.scroll::-webkit-scrollbar { width: 10px; height: 10px; }
+.scroll::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 10px;
+  border: 2px solid var(--bg);
+}
+.scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* ── Animations ────────────────────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes slideInRight {
+  from { transform: translateX(24px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Visibility / display ──────────────────────────────────────────── */
+.hidden { display: none !important; }
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+
+/* Viewport-gated visibility. Use sparingly — prefer CSS @media in the
+ * owning component file. These help when a JSX node has no good class
+ * to hang a rule off of. */
+.show-tablet-up { display: initial; }
+.show-mobile { display: none; }
+
+@media (max-width: 900px) {
+  .hide-tablet { display: none !important; }
+}
+@media (max-width: 560px) {
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: initial; }
+}
+
+/* ── Clickable surface (cards that navigate) ───────────────────────── */
+.clickable {
+  cursor: pointer;
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+}
+.clickable:hover { box-shadow: var(--shadow-md); }

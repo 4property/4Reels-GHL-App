@@ -1,0 +1,340 @@
+/* Styles for the reels feature: Dashboard, ReelCard, ReelsTable, stats. */
+
+/* ── Dashboard page ────────────────────────────────────────────────── */
+.reels-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+  margin-bottom: var(--space-10);
+}
+
+.reels-metric-card {
+  padding: var(--space-7) var(--space-8);
+}
+
+.reels-metric-label {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.reels-metric-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.reels-metric-value {
+  font-size: var(--fs-22);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+}
+
+.reels-metric-delta {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+.reels-metric-delta.up { color: var(--success); }
+
+.reels-subtab-count {
+  font-size: var(--fs-11);
+  color: var(--text-subtle);
+  background: var(--bg-sunken);
+  padding: 1px var(--space-3);
+  border-radius: var(--r-pill);
+  margin-left: var(--space-1);
+}
+
+.reels-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-7);
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.reels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-8);
+}
+
+/* ── ReelCard (grid view) ──────────────────────────────────────────── */
+.reel-card {
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+}
+.reel-card:hover { box-shadow: var(--shadow-md); }
+
+.reel-card-cover {
+  position: relative;
+}
+.reel-card-cover .cover { border-radius: 0; }
+
+.reel-card-cover-top {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  right: var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.reel-card-cover-bottom {
+  position: absolute;
+  bottom: var(--space-4);
+  left: var(--space-4);
+  right: var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.reel-card-networks {
+  display: flex;
+  gap: 0;
+}
+.reel-card-networks > * + * { margin-left: -6px; }
+
+.reel-card-body {
+  padding: var(--space-6);
+}
+
+.reel-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.reel-card-title {
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-13);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Address wraps to max 2 lines with line-clamp so long street names
+ * (which are common) stay readable instead of being truncated to one
+ * line of "…". Falls back to standard overflow on browsers without
+ * -webkit-line-clamp. */
+.reel-card-address {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+  min-height: calc(1.35em * 2);
+}
+
+.reel-card-price {
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.reel-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--divider);
+}
+
+.reel-card-btn-sm {
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--fs-11);
+}
+
+.reel-card-time {
+  font-size: var(--fs-11);
+  color: var(--text-subtle);
+}
+
+/* ── ReelsTable (list view) ────────────────────────────────────────── */
+.reels-table-wrap {
+  padding: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.reels-table-row {
+  cursor: pointer;
+}
+
+.reels-table-thumb {
+  width: 36px;
+  height: 48px;
+  flex: none;
+}
+
+.reels-table-title {
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.reels-table-subtitle {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.reels-table-networks { gap: 0; }
+.reels-table-networks > * + * { margin-left: -6px; }
+
+.reels-table-created {
+  color: var(--text-muted);
+  font-size: var(--fs-12);
+}
+
+/* ── CompactStat ───────────────────────────────────────────────────── */
+.compact-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+.compact-stat > svg { opacity: 0.75; }
+
+.sparkline { display: block; }
+
+/* ── TrackerStats ──────────────────────────────────────────────────── */
+.tracker-empty {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--r-sm);
+  background: var(--bg-soft);
+  font-size: var(--fs-11);
+  color: var(--text-subtle);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.tracker {
+  margin-top: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--r-sm);
+  background: var(--bg-soft);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.tracker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.tracker-stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-width: 0;
+  flex: 1;
+}
+
+.tracker-chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+  gap: var(--space-3);
+}
+
+.tracker-chart-label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.tracker-chart-total {
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.tracker-chart-meta {
+  font-size: var(--fs-10);
+  color: var(--text-subtle);
+}
+
+.tracker-range {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  overflow: hidden;
+  background: var(--surface);
+  flex: none;
+}
+.tracker-range-btn {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--fs-10);
+  font-weight: var(--fw-semibold);
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  line-height: var(--lh-tight);
+}
+.tracker-range-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ───────────────────────────────────────────────────────────────────── */
+/*                               TABLET                                  */
+/* ───────────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .reels-metrics { grid-template-columns: repeat(2, 1fr); }
+  .reels-toolbar { gap: var(--space-4); }
+  .reels-toolbar .search { min-width: 180px; }
+  .reels-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+}
+
+/* ───────────────────────────────────────────────────────────────────── */
+/*                               MOBILE                                  */
+/* ───────────────────────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .reels-metrics {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+  .reels-metric-card { padding: var(--space-5) var(--space-6); }
+  .reels-metric-value { font-size: var(--fs-18); }
+  .reels-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .reels-toolbar .row { flex-wrap: wrap; }
+  .reels-toolbar .search { min-width: 0; flex: 1 1 auto; }
+  .reels-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+  .reel-card-title { font-size: var(--fs-12); }
+  .reel-card-address { font-size: var(--fs-11); }
+  .reel-card-price { font-size: var(--fs-12); }
+  .reel-card-body { padding: var(--space-5); }
+}

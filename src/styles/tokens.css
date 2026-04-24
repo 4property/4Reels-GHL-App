@@ -1,0 +1,176 @@
+/* Design tokens — the single source of truth for colors, spacing, type,
+ * radii, shadows, z-index and breakpoints.
+ *
+ * Change a value here and the whole app follows. Component CSS must reach
+ * for these variables instead of hard-coding pixels or hex values.
+ *
+ * Two themes via [data-theme="dark"] on <html>. */
+
+:root {
+  /* ── Color: neutrals (cool-warm balanced) ─────────────────────────── */
+  --bg: #ffffff;
+  --bg-soft: #f7f8fa;
+  --bg-sunken: #f2f4f7;
+  --surface: #ffffff;
+  --surface-hover: #f7f8fa;
+
+  --border: #e6e8ee;
+  --border-strong: #d7dbe4;
+  --divider: #eef0f4;
+
+  --text: #0f1729;
+  --text-muted: #5a6478;
+  --text-subtle: #8a93a6;
+  --text-placeholder: #a6adbd;
+
+  /* Accent — indigo-blue, distinct from pure GHL blue */
+  --accent: #2b57f6;
+  --accent-hover: #1e47df;
+  --accent-soft: #eaf0ff;
+  --accent-soft-2: #f5f7ff;
+  --accent-ring: rgba(43, 87, 246, 0.22);
+
+  /* Status */
+  --success: #119c5a;
+  --success-soft: #e6f6ee;
+  --warning: #b5730d;
+  --warning-soft: #fdf3e0;
+  --danger: #d0321c;
+  --danger-soft: #fceae6;
+  --info: #1d7fb8;
+  --info-soft: #e6f3fb;
+
+  /* Overlays (for image captions, modal backdrops, gradients over media) */
+  --overlay-dark: rgba(15, 23, 41, 0.72);
+  --overlay-darker: rgba(15, 23, 41, 0.85);
+  --overlay-scrim: rgba(15, 23, 41, 0.5);
+  --overlay-backdrop: rgba(15, 23, 41, 0.4);
+
+  /* ── Spacing scale (4px base) ────────────────────────────────────── */
+  --space-0: 0;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 10px;
+  --space-6: 12px;
+  --space-7: 14px;
+  --space-8: 16px;
+  --space-10: 20px;
+  --space-12: 24px;
+  --space-14: 28px;
+  --space-16: 32px;
+  --space-20: 40px;
+  --space-24: 48px;
+  --space-32: 64px;
+
+  /* ── Typography scale ────────────────────────────────────────────── */
+  --fs-10: 10px;
+  --fs-11: 11px;
+  --fs-12: 12px;
+  --fs-13: 13px;
+  --fs-14: 14px;
+  --fs-15: 15px;
+  --fs-16: 16px;
+  --fs-18: 18px;
+  --fs-20: 20px;
+  --fs-22: 22px;
+  --fs-24: 24px;
+  --fs-28: 28px;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  --lh-tight: 1.2;
+  --lh-snug: 1.35;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.65;
+
+  /* ── Radii ───────────────────────────────────────────────────────── */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-2xl: 20px;
+  --r-pill: 999px;
+
+  /* ── Shadows ─────────────────────────────────────────────────────── */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 41, 0.04);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 41, 0.06), 0 1px 3px rgba(15, 23, 41, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 41, 0.08), 0 2px 4px rgba(15, 23, 41, 0.04);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 41, 0.12), 0 4px 8px rgba(15, 23, 41, 0.06);
+
+  /* ── Z-index layers ──────────────────────────────────────────────── */
+  --z-base: 1;
+  --z-sticky: 40;
+  --z-drawer: 60;
+  --z-modal-backdrop: 80;
+  --z-modal: 90;
+  --z-toast: 100;
+
+  /* ── Transitions ─────────────────────────────────────────────────── */
+  --t-fast: 120ms;
+  --t-base: 180ms;
+  --t-slow: 240ms;
+
+  /* ── Fonts ───────────────────────────────────────────────────────── */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ── Breakpoints (used by JS; CSS uses the @media values directly) ─
+   * Kept here for documentation and future container-query alignment. */
+  --bp-sm: 560px;
+  --bp-md: 760px;
+  --bp-lg: 900px;
+  --bp-xl: 1200px;
+  --bp-2xl: 1440px;
+
+  /* ── Layout ──────────────────────────────────────────────────────── */
+  --page-max: 1440px;
+  --topbar-h: 48px;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0e14;
+  --bg-soft: #11141c;
+  --bg-sunken: #0a0d13;
+  --surface: #12151d;
+  --surface-hover: #181c26;
+
+  --border: #232834;
+  --border-strong: #2e3442;
+  --divider: #1b1f29;
+
+  --text: #e8ecf3;
+  --text-muted: #9aa3b5;
+  --text-subtle: #6f7789;
+  --text-placeholder: #4e5668;
+
+  --accent: #5a82ff;
+  --accent-hover: #7798ff;
+  --accent-soft: #1a2240;
+  --accent-soft-2: #141a2e;
+  --accent-ring: rgba(90, 130, 255, 0.28);
+
+  --success: #35c27d;
+  --success-soft: #112a1e;
+  --warning: #d99743;
+  --warning-soft: #2a1f0f;
+  --danger: #ef6a54;
+  --danger-soft: #2c140f;
+  --info: #55a8d8;
+  --info-soft: #0f2230;
+
+  --overlay-dark: rgba(0, 0, 0, 0.72);
+  --overlay-darker: rgba(0, 0, 0, 0.85);
+  --overlay-scrim: rgba(0, 0, 0, 0.6);
+  --overlay-backdrop: rgba(0, 0, 0, 0.55);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.55);
+}

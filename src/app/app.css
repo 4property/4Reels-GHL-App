@@ -1,0 +1,221 @@
+/* Styles for the app chrome (Topbar + TweaksPanel + MobileNav).
+ * Everything specific to the shell lives here. Page-level layout
+ * (.topbar, .tab, .page) lives in the global layout.css. */
+
+/* ── Topbar extras (beyond the global .topbar) ─────────────────────── */
+.topbar-brand-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+  margin: 0 var(--space-5);
+}
+
+.topbar-agency-logo {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-xs);
+}
+
+.topbar-agency-name {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  font-weight: var(--fw-medium);
+}
+
+.topbar-settings-btn {
+  margin-left: var(--space-4);
+  align-self: center;
+}
+
+.topbar-search {
+  min-width: 220px;
+}
+
+/* Hamburger + mobile-only icons: hidden on desktop. */
+.topbar-burger { display: none; }
+.topbar-mobile-search { display: none; }
+
+/* ── Tweaks panel (floating dev panel) ─────────────────────────────── */
+.tweaks-panel {
+  position: fixed;
+  bottom: var(--space-10);
+  right: var(--space-10);
+  z-index: 200;
+  width: 280px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.tweaks-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6) var(--space-7);
+  border-bottom: 1px solid var(--divider);
+}
+
+.tweaks-panel-title {
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
+}
+
+.tweaks-panel-body {
+  padding: var(--space-7);
+}
+
+.tweaks-panel-label {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+}
+
+/* ── Mobile nav drawer ─────────────────────────────────────────────── */
+.mnav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-drawer);
+  background: var(--overlay-backdrop);
+  display: flex;
+  justify-content: flex-start;
+  animation: mnav-fade 160ms ease-out;
+}
+
+@keyframes mnav-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes mnav-slide-in {
+  from { transform: translateX(-12px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.mnav-panel {
+  width: 86%;
+  max-width: 320px;
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  box-shadow: 12px 0 40px rgba(15, 23, 41, 0.12);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: mnav-slide-in 200ms ease-out;
+}
+
+.mnav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-7) var(--space-7);
+  border-bottom: 1px solid var(--divider);
+}
+
+.mnav-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-width: 0;
+}
+.mnav-user-name {
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mnav-user-role {
+  font-size: var(--fs-11);
+  color: var(--text-muted);
+}
+
+.mnav-list {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-5) var(--space-4);
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.mnav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: none;
+}
+.mnav-item:hover { background: var(--bg-soft); }
+.mnav-item.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: var(--fw-semibold);
+}
+
+.mnav-divider {
+  height: 1px;
+  background: var(--divider);
+  margin: var(--space-3) var(--space-6);
+}
+
+.mnav-actions {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3) var(--space-4) var(--space-7);
+  gap: 2px;
+}
+
+/* ───────────────────────────────────────────────────────────────────── */
+/*                               TABLET                                  */
+/* ───────────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  /* Show the hamburger, hide the inline tabs row */
+  .topbar-burger { display: inline-grid; }
+  .topbar .tabs { display: none; }
+
+  /* Brand compact: no agency name (keep logo), trim padding */
+  .topbar-brand {
+    padding-right: 0;
+    border-right: 0;
+    margin-right: 0;
+    gap: var(--space-3);
+    flex: 1;
+    min-width: 0;
+  }
+  .topbar-agency-name { display: none; }
+  .topbar-brand-sep { display: none; }
+
+  /* Hide desktop-only icon buttons (theme/bell/help → drawer) */
+  .topbar-desktop-only { display: none; }
+
+  /* Search collapses into an icon button */
+  .topbar-search { display: none; }
+  .topbar-mobile-search { display: inline-grid; }
+}
+
+/* ───────────────────────────────────────────────────────────────────── */
+/*                               MOBILE                                  */
+/* ───────────────────────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .topbar-brand-text { display: none; }
+  .topbar-agency-logo { display: none; }
+  .tweaks-panel {
+    width: calc(100% - var(--space-8));
+    right: var(--space-4);
+    bottom: var(--space-4);
+  }
+  .mnav-panel { max-width: 300px; }
+}

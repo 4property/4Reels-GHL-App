@@ -1,0 +1,388 @@
+/* Admin feature: team table, policy strip, agency drawer, source cards,
+ * invite/edit modals. Built on top of the global .modal and .drawer
+ * primitives; only admin-specific sizing and bespoke chrome lives here. */
+
+/* ── Policy strip ──────────────────────────────────────────────────── */
+.policy-strip { padding: var(--space-8); margin-bottom: var(--space-8); }
+
+.policy-strip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.policy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-6);
+}
+
+.policy-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  background: var(--bg-soft);
+  border-radius: var(--r-md);
+}
+.policy-row-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.policy-row-title { font-size: var(--fs-13); font-weight: var(--fw-medium); }
+.policy-row-sub { font-size: var(--fs-11); color: var(--text-muted); }
+
+.policy-sso {
+  margin-top: var(--space-6);
+  padding: var(--space-6);
+  background: var(--bg-soft);
+  border-radius: var(--r-md);
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: var(--space-6);
+  align-items: end;
+}
+
+/* ── Team subtabs count + toolbar ──────────────────────────────────── */
+.team-subtab-count {
+  font-size: var(--fs-11);
+  color: var(--text-subtle);
+  background: var(--bg-sunken);
+  padding: 1px var(--space-3);
+  border-radius: var(--r-pill);
+  margin-left: var(--space-1);
+}
+.team-subtab-roles { margin-left: auto; color: var(--accent); }
+.team-subtab-pending { color: var(--warning); }
+
+.team-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+.team-bulk-count {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  padding: 0 var(--space-4);
+}
+.team-bulk-select {
+  padding: var(--space-3) var(--space-5);
+}
+
+.team-table-wrap { padding: 0; overflow: hidden; }
+.team-table-wrap > .scroll-x { overflow-x: auto; }
+.team-role-select {
+  padding: 3px 22px 3px var(--space-4);
+  font-size: var(--fs-12);
+  width: auto;
+}
+.team-empty-cell {
+  text-align: center;
+  padding: var(--space-16);
+  color: var(--text-muted);
+  font-size: var(--fs-13);
+}
+
+/* ── Invite modal specifics ────────────────────────────────────────── */
+.invite-row {
+  display: grid;
+  grid-template-columns: 1fr 150px auto;
+  gap: var(--space-4);
+  align-items: center;
+}
+.invite-info {
+  padding: var(--space-6);
+  background: var(--bg-soft);
+  border-radius: var(--r-md);
+  display: flex;
+  gap: var(--space-5);
+  align-items: flex-start;
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+
+/* ── Role permissions table ────────────────────────────────────────── */
+.role-perms-hint {
+  margin-top: var(--space-8);
+  padding: var(--space-6);
+  background: var(--bg-soft);
+  border-radius: var(--r-md);
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+.role-perms-upgrade {
+  color: var(--accent);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+/* ── Agencies metrics + table ──────────────────────────────────────── */
+.agencies-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+  margin-bottom: var(--space-10);
+}
+.agencies-metric-card { padding: var(--space-7) var(--space-8); }
+.agencies-metric-label {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  margin-bottom: var(--space-3);
+}
+.agencies-metric-value {
+  font-size: var(--fs-22);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+}
+.agencies-metric-delta {
+  font-size: var(--fs-12);
+  color: var(--success);
+  margin-top: var(--space-1);
+}
+.agencies-status-pills {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.status-pill-sm { font-size: var(--fs-10); }
+
+/* ── Agency drawer ─────────────────────────────────────────────────── */
+.agency-drawer-head {
+  padding: 18px var(--space-11, 22px) var(--space-7);
+  border-bottom: 1px solid var(--divider);
+}
+.agency-drawer-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+.agency-drawer-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.agency-drawer-name-text {
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
+}
+.agency-drawer-id {
+  font-size: var(--fs-11);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.agency-drawer-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  margin-top: var(--space-8);
+}
+.agency-drawer-subtabs {
+  margin-top: var(--space-8);
+  margin-bottom: -14px;
+}
+.agency-drawer-subtabs .badge.danger {
+  font-size: 9px;
+  margin-left: var(--space-2);
+}
+
+.mini-stat {
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-soft);
+  border-radius: var(--r-md);
+}
+.mini-stat-label {
+  font-size: var(--fs-10);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.mini-stat-value {
+  font-size: var(--fs-15);
+  font-weight: var(--fw-semibold);
+  margin-top: 1px;
+}
+
+.agency-drawer-body {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-11, 22px);
+  background: var(--bg-soft);
+}
+.agency-drawer-footer {
+  padding: var(--space-6) var(--space-11, 22px);
+  border-top: 1px solid var(--divider);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface);
+}
+.agency-drawer-footer-state {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+.agency-drawer-footer-state.dirty { color: var(--warning); }
+
+.agency-drawer-info {
+  padding: var(--space-6);
+  background: var(--accent-soft);
+  border-radius: var(--r-md);
+  display: flex;
+  gap: var(--space-5);
+  align-items: flex-start;
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+
+/* ── Source cards (GHL, WP) ────────────────────────────────────────── */
+.source-card { padding: 0; overflow: hidden; }
+.source-head {
+  padding: var(--space-8);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-7);
+}
+.source-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  background: var(--bg-soft);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid var(--divider);
+}
+.source-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+.source-title { font-size: var(--fs-14); font-weight: var(--fw-semibold); }
+.source-sub {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.source-body { padding: 0 var(--space-8) var(--space-8); }
+.source-test {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-6);
+  background: var(--bg-soft);
+  border-radius: var(--r-md);
+}
+.source-test-msg {
+  font-size: var(--fs-12);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.source-test-msg.ok { color: var(--success); }
+.source-test-msg.err { color: var(--danger); }
+
+/* ── Billing tab ───────────────────────────────────────────────────── */
+.billing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+.kv-label {
+  font-size: var(--fs-10);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.kv-value {
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
+  margin-top: var(--space-1);
+}
+
+/* ── Activity tab ──────────────────────────────────────────────────── */
+.activity-row {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--divider);
+}
+.activity-row.last { padding-bottom: 0; border-bottom: 0; }
+.activity-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  background: var(--bg-soft);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.activity-text { font-size: var(--fs-13); }
+.activity-time {
+  font-size: var(--fs-11);
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* ── UserRowActions inline checkbox label (invite modal) ───────────── */
+.invite-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-6);
+  background: var(--bg-soft);
+  border-radius: var(--r-md);
+  cursor: pointer;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────── */
+/* ───────────────────────────────────────────────────────────────────── */
+/*                               TABLET                                  */
+/* ───────────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .agencies-metrics { grid-template-columns: repeat(2, 1fr); }
+  .billing-grid { grid-template-columns: 1fr; }
+  .policy-sso { grid-template-columns: 1fr; }
+  .agency-drawer-stats { grid-template-columns: repeat(2, 1fr); }
+  .invite-row { grid-template-columns: 1fr auto; }
+  .team-toolbar { gap: var(--space-4); }
+  .team-toolbar .search { min-width: 180px; }
+}
+
+/* ───────────────────────────────────────────────────────────────────── */
+/*                               MOBILE                                  */
+/* ───────────────────────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .policy-strip { padding: var(--space-6); }
+  .policy-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+  .policy-row { padding: var(--space-4) var(--space-5); }
+  .agencies-metrics { grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  .agencies-metric-card { padding: var(--space-5) var(--space-6); }
+  .agencies-metric-value { font-size: var(--fs-18); }
+  .team-toolbar { flex-direction: column; align-items: stretch; }
+  .team-toolbar > .row { flex-wrap: wrap; }
+  .team-toolbar .search { min-width: 0; flex: 1; }
+  .invite-row { grid-template-columns: 1fr; gap: var(--space-3); }
+
+  /* Agency drawer stats: keep 2x2 */
+  .agency-drawer-head { padding: var(--space-6) var(--space-5) var(--space-4); }
+  .agency-drawer-body { padding: var(--space-6) var(--space-5); }
+  .agency-drawer-footer { padding: var(--space-5) var(--space-5); }
+  .agency-drawer-stats { gap: var(--space-3); }
+
+  /* Source card body */
+  .source-head { padding: var(--space-6); }
+  .source-body { padding: 0 var(--space-6) var(--space-6); }
+  .source-test { flex-wrap: wrap; }
+}

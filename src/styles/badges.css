@@ -1,0 +1,54 @@
+/* Chip / pill patterns that float over content: status badges on cards,
+ * duration chips over videos, kind labels, count pills, etc.
+ *
+ * Keep `.badge` in surfaces.css for the table/list badges (solid color
+ * fills). What lives here is the *overlay* family that sits on top of
+ * imagery or acts as a floating meta tag. */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) 7px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-snug);
+  white-space: nowrap;
+}
+
+.chip-overlay {
+  background: var(--overlay-dark);
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+.chip-soft {
+  background: var(--bg-sunken);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.chip-accent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.chip-success { background: var(--success-soft); color: var(--success); }
+.chip-warning { background: var(--warning-soft); color: var(--warning); }
+.chip-danger  { background: var(--danger-soft);  color: var(--danger);  }
+.chip-info    { background: var(--info-soft);    color: var(--info);    }
+
+/* Count bubble (e.g. "12" next to a page title) */
+.count-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  padding: 2px 7px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+  background: var(--accent-soft);
+  color: var(--accent);
+}

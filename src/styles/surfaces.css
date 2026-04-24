@@ -1,0 +1,237 @@
+/* Cards, tables, badges, avatars, empty states */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-xs);
+}
+
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--divider);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.card-subtitle {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.tbl {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+.tbl th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-soft);
+  font-size: 12px;
+}
+.tbl td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--divider);
+  color: var(--text);
+  vertical-align: middle;
+}
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl tbody tr:hover td { background: var(--surface-hover); }
+.tbl .num { font-variant-numeric: tabular-nums; }
+.tbl-hover tbody tr:hover { background: var(--bg-soft); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--bg-sunken);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  line-height: 1.5;
+}
+.badge.success { background: var(--success-soft); color: var(--success); border-color: transparent; }
+.badge.warning { background: var(--warning-soft); color: var(--warning); border-color: transparent; }
+.badge.danger { background: var(--danger-soft); color: var(--danger); border-color: transparent; }
+.badge.info { background: var(--info-soft); color: var(--info); border-color: transparent; }
+.badge.accent { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+
+.badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  flex: none;
+}
+
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+/* ── Modal shell ──────────────────────────────────────────────────────
+ * Consistent backdrop + panel used by every dialog (edit user, invite,
+ * role permissions, agency create, google review, etc.). Per-modal
+ * sizing is applied via extra modifiers in the feature CSS. */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: var(--overlay-backdrop);
+  display: grid;
+  place-items: center;
+  padding: var(--space-10);
+}
+
+.modal-panel {
+  width: 100%;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+@media (max-width: 560px) {
+  .modal-backdrop { padding: 0; align-items: flex-end; }
+  .modal-panel {
+    max-height: 95vh;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    max-width: 100% !important;
+  }
+  .modal-body { padding: var(--space-7); }
+  .modal-header,
+  .modal-footer { padding-left: var(--space-7); padding-right: var(--space-7); }
+}
+
+.modal-header {
+  padding: var(--space-8) var(--space-10);
+  border-bottom: 1px solid var(--divider);
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.modal-header-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.modal-header-icon.accent-soft { background: var(--accent-soft); color: var(--accent); }
+
+.modal-title { font-size: var(--fs-14); font-weight: var(--fw-semibold); }
+.modal-sub { font-size: var(--fs-12); color: var(--text-muted); }
+
+.modal-body {
+  padding: var(--space-10);
+  overflow: auto;
+}
+
+.modal-footer {
+  padding: var(--space-6) var(--space-10);
+  border-top: 1px solid var(--divider);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  background: var(--bg-soft);
+}
+.modal-footer.between { justify-content: space-between; align-items: center; }
+
+/* Drawer (side sheet) — used for AgencyDrawer */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-drawer);
+  background: var(--overlay-backdrop);
+  display: flex;
+  justify-content: flex-end;
+}
+.drawer-panel {
+  width: 100%;
+  max-width: 680px;
+  background: var(--surface);
+  height: 100vh;
+  box-shadow: -12px 0 40px rgba(15, 23, 41, 0.12);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideInRight 180ms ease-out;
+}
+
+@media (max-width: 560px) {
+  .drawer-panel { max-width: 100%; }
+}
+
+/* Dropdown menu — used by row "⋯" menus */
+.menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 20;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2);
+  min-width: 180px;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: 7px var(--space-5);
+  border: 0;
+  background: transparent;
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--fs-13);
+  color: var(--text);
+  font-family: inherit;
+}
+.menu-item:hover { background: var(--bg-soft); }
+.menu-item.danger { color: var(--danger); }

@@ -1,60 +1,60 @@
-# 4Reels — Documentación funcional del producto
+# 4Reels — Product documentation
 
-> **Qué es 4Reels:** un SaaS multi-tenant que genera automáticamente reels verticales (3:4 / 9:16) para inmobiliarias a partir de sus listados, los publica en las redes sociales del cliente y mide el tráfico que generan. Está pensado para integrarse con **GoHighLevel (GHL)** y **WordPress**, que son las dos fuentes principales de donde cada agencia saca sus propiedades.
+> **What 4Reels is:** a multi-tenant SaaS that automatically generates vertical reels (3:4 / 9:16) for real-estate agencies from their listings, publishes them to the agency's social networks, and measures the traffic they drive. It's built to integrate with **GoHighLevel (GHL)** and **WordPress**, the two primary sources each agency pulls properties from.
 >
-> El frontend actual simula la experiencia completa del producto: renderizado, edición, publicación, métricas, multi-agencia y administración. Los datos del MVP son mock (ver [data/mock.js](data/mock.js)), pero cada pantalla refleja el contrato real que el backend tendrá que cumplir.
+> The current frontend simulates the full product experience: rendering, editing, publishing, analytics, multi-agency, and admin. MVP data is mocked (see `src/lib/api/mock/store.js`), but every screen reflects the contract the backend will have to fulfill.
 
 ---
 
-## 1. Arquitectura y conceptos base
+## 1. Architecture and core concepts
 
-### 1.1 Modelo de tenants
+### 1.1 Tenant model
 
-Un tenant = una **agencia inmobiliaria**. Cada tenant tiene:
+A tenant = one **real-estate agency**. Each tenant has:
 
-- Un **plan** (Starter / Growth / Scale) y un **MRR** asociado.
-- **Seats** (miembros del equipo) con roles.
-- Dos **fuentes de datos** conectables: GHL y WordPress. Ver [components/AgencyDrawer.jsx](components/AgencyDrawer.jsx).
-- Su propia **biblioteca de música**, **reglas de selección**, **marca** (logo/colores/outro) y **defaults de render**.
-- Un catálogo de **redes sociales conectadas** con handles.
-- Un **equipo** con permisos por rol (ver sección 7).
+- A **plan** (Starter / Growth / Scale) and an associated **MRR**.
+- **Seats** (team members) with roles.
+- Two **data sources** that can be connected: GHL and WordPress. See `src/features/admin/agencies/AgencyDrawer.jsx`.
+- Its own **music library**, **selection rules**, **brand** (logo/colors/outro), and **rendering defaults**.
+- A catalog of **connected social networks** with handles.
+- A **team** with per-module role permissions (see section 7).
 
-El backend recibirá las propiedades nuevas por webhook/poll desde esas fuentes, generará reels según los defaults del tenant, y o bien los publicará automáticamente o los enviará a revisión por email — dependiendo de su configuración de Automation (sección 6).
+The backend receives new properties by webhook or polling from those sources, generates reels per the tenant's defaults, and either publishes them automatically or queues them for email review — depending on the Automation configuration (section 6).
 
-### 1.2 Flujo end-to-end de un reel
+### 1.2 End-to-end reel flow
 
 ```
-Propiedad nueva (GHL / WP)
+New property (GHL / WP)
         │
         ▼
-  Ingesta (webhook/poll)  ───► Normalización de fotos/precio/texto
+  Ingestion (webhook/poll)  ───► Normalize photos/price/copy
         │
         ▼
-  AI: selección de fotos + guion de subtítulos + copy por red
+  AI: photo selection + subtitle script + per-network copy
         │
         ▼
-  Render (MP4 3:4/9:16 con música, intro/outro, watermark, subs)
+  Render (3:4/9:16 MP4 with music, intro/outro, watermark, subs)
         │
-        ├── Auto-publish  ───►  Instagram / TikTok / YouTube / FB / GMB / LinkedIn
-        └── Review-first  ───►  Email con "Approve / Edit / Reject"
+        ├── Auto-publish   ───►  Instagram / TikTok / YouTube / FB / GMB / LinkedIn
+        └── Review-first   ───►  Email with "Approve / Edit / Reject"
         │
         ▼
-  Link tracker (views, clicks, CTR por red, series 7d/30d)
+  Link tracker (views, clicks, CTR per network, 7d/30d series)
 ```
 
 ---
 
-## 2. Shell de la app — navegación global
+## 2. App shell — global navigation
 
-Implementado en [components/App.jsx](components/App.jsx).
+Implemented in `src/app/Shell.jsx` + `src/app/Topbar.jsx`.
 
-- **Topbar** con:
-  - Marca "4Reels" + marca de la agencia activa (logo + nombre, ej. *CKP Estate Agents*).
-  - Buscador global (atajo `⌘K`) — solo visual, no wireado.
-  - Toggle de **tema** claro/oscuro (persistido en `localStorage` con la clave `4r_theme`).
-  - Botón de **notificaciones** (abre el modal `NotificationSettings`, ver sección 8).
-  - Avatar del usuario activo.
-- **Tabs principales** (pestañas persistidas en `localStorage` con la clave `4r_page`):
+- **Topbar** with:
+  - "4Reels" brand + active agency brand (logo + name, e.g. *CKP Estate Agents*).
+  - Global search (⌘K shortcut) — visual only, not wired.
+  - **Theme** toggle light/dark (persisted in `localStorage` under `4r_theme`).
+  - **Notifications** button (opens `NotificationSettings`, see section 8).
+  - Current user's avatar.
+- **Main tabs** (persisted in `localStorage` under `4r_page`):
   1. **Reels** — dashboard
   2. **Music**
   3. **Social**
@@ -62,459 +62,443 @@ Implementado en [components/App.jsx](components/App.jsx).
   5. **Defaults**
   6. **Automation**
   7. **Admin** (super-admin)
-- Panel flotante **Tweaks** que se activa mediante `postMessage` (`__activate_edit_mode`) — está pensado para un modo edición embebido en un parent frame (ej. cuando la app se embebe en otro shell).
+- Floating **Tweaks** panel activated via `postMessage` (`__activate_edit_mode`) — designed for an embedded edit mode when the app is hosted inside another shell.
 
 ---
 
-## 3. Dashboard — listado de reels
+## 3. Dashboard — reels list
 
-Implementado en [components/Dashboard.jsx](components/Dashboard.jsx). Es la landing de todo usuario operativo.
+Implemented in `src/features/reels/Dashboard.jsx`. It's the landing page for any operational user.
 
-### 3.1 Métricas del mes
-Cuatro tarjetas en la parte superior:
-- Reels este mes (con delta vs. periodo anterior).
-- Publicados.
-- Pendientes de aprobar (*Needs approval*).
-- Rechazados.
+### 3.1 Monthly metrics
+Four cards at the top:
+- Reels this month (with delta vs. previous period).
+- Published.
+- Needs approval.
+- Rejected.
 
-### 3.2 Filtros rápidos (subtabs)
-- All · Needs approval · Published · Rejected, con contador en cada filtro.
+### 3.2 Quick filters (subtabs)
+- All · Needs approval · Published · Rejected, each with a count.
 
-### 3.3 Controles
-- Búsqueda por título o dirección.
-- Filtros avanzados y ordenación (botones visuales).
-- Toggle de vista **Grid ↔ List**.
+### 3.3 Controls
+- Search by title or address.
+- Advanced filters and sort (visual buttons).
+- **Grid ↔ List** view toggle.
 
-### 3.4 Tarjeta de reel (vista Grid)
+### 3.4 Reel card (Grid view)
 
-Cada card, renderizada por `ReelCard`, muestra:
+Each card, rendered by `ReelCard`, shows:
 
-- **Preview 3:4** con el `.mp4` del reel (componente [components/Cover.jsx](components/Cover.jsx)): reproduce en bucle con `autoPlay muted loop`.
-- **StatusBadge** de publish-status (`ready`, `needs-approval`, `published`, `rejected`, `scheduled`, `failed`, `draft`).
-- **Duración** arriba a la derecha.
+- **3:4 preview** with the reel's `.mp4` (`src/shared/Cover.jsx`): loops with `autoPlay muted loop`.
+- **StatusBadge** for publish-status (`ready`, `needs-approval`, `published`, `rejected`, `scheduled`, `failed`, `draft`).
+- **Duration** top right.
 - **KindBadge** (For sale / Sale agreed / Sold / To let / Let agreed / Let).
-- **Chips circulares** de las redes sociales en las que está publicado.
-- Título, dirección, precio.
-- **Acciones contextuales**:
-  - Si el reel está en `needs-approval` → botones **Approve** / **Reject**.
-  - Si está `rejected` → "Not published".
-  - Si está publicado → "Live on N networks".
-- **Tracker de links** (`TrackerStats`): si hay datos, muestra views, clicks, CTR (con color según rango <1%, 1–1.5%, >1.5%) y un **sparkline SVG** con toggle 7d / 30d de clicks, más un `SocialDot` de la red con más clicks.
+- **Circular chips** for the social networks the reel is live on.
+- Title, address, price.
+- **Contextual actions**:
+  - If the reel is `needs-approval` → **Approve** / **Reject** buttons.
+  - If `rejected` → "Not published".
+  - If published → "Live on N networks".
+- **Link tracker** (`TrackerStats`): if data exists, shows views, clicks, CTR (colored by threshold: <1%, 1–1.5%, >1.5%), a **7d / 30d clicks sparkline** (SVG), and a `SocialDot` for the top-performing network.
 
-### 3.5 Tabla (vista List)
+### 3.5 Table (List view)
 
-Tabla con: Property (thumb + título + dirección), Status, Networks, Duration, Views, Clicks, CTR, Created. Cada fila abre el `ReelEditor` al hacer click.
+Columns: Property (thumb + title + address), Status, Networks, Duration, Views, Clicks, CTR, Created. Clicking a row opens the `ReelEditor`.
 
 ---
 
-## 4. Reel Editor — edición individual
+## 4. Reel Editor — per-reel editing
 
-Overlay a pantalla completa, en [components/ReelEditor.jsx](components/ReelEditor.jsx). Se abre desde cualquier ReelCard o fila de la tabla.
+Full-screen overlay in `src/features/reels/editor/ReelEditor.jsx`. Opens from any `ReelCard` or table row.
 
 ### 4.1 Layout
 
-Dos columnas:
+Two columns:
 
-- **Izquierda (preview):** reel 3:4 con watermark de la agencia, *subtitle strip* dinámica mostrando el texto de la escena actual, botón play, **scrubber por escenas** (cada foto es una miniatura clickeable que salta a esa escena) y meta inferior con número de escenas, duración y track de música.
-- **Derecha (panel de edición):** cinco tabs.
+- **Left (preview):** 3:4 reel with the agency watermark, a dynamic *subtitle strip* showing the current scene's text, play button, **scene scrubber** (each photo is a clickable thumbnail that jumps to that scene), and a meta footer with scene count, duration, and music track.
+- **Right (editor panel):** five tabs.
 
-### 4.2 Tab `Photos`
+### 4.2 `Photos` tab
 
-Grid de fotos de la propiedad con:
+Property-photo grid with:
 
-- **Score de AI** visible arriba a la derecha de cada foto (ej. "AI 96").
-- **Selección** (click = incluir/excluir del reel).
-- **Drag & drop** para reordenar.
-- Contador "N/M" en el tab.
-- Botón **Re-run AI selection** para que el modelo vuelva a sugerir las mejores.
-- Botón **Upload** para añadir fotos manualmente.
+- **AI score** visible top right of each photo (e.g. "AI 96").
+- **Selection** (click to include/exclude from the reel).
+- **Drag & drop** reordering.
+- "N/M" counter in the tab label.
+- **Re-run AI selection** button for the model to re-pick the best photos.
+- **Upload** button to add photos manually.
 
-### 4.3 Tab `Subtitles`
+### 4.3 `Subtitles` tab
 
-Lista de subtítulos generados por la AI. Cada línea tiene:
+List of AI-generated subtitles. Each line has:
 
-- Índice, `start`/`end` editables (formato `0:04`), texto libre editable inline, botón de borrar.
-- Click sobre una línea navega el preview a esa escena.
-- Botones **Regenerate** (relanza la generación completa) y **Add line**.
-- Aviso de que el estilo del subtítulo viene de **Brand**.
+- Index, editable `start`/`end` (format `0:04`), free-text inline-editable line, delete button.
+- Clicking a line navigates the preview to that scene.
+- **Regenerate** (re-triggers full generation) and **Add line** buttons.
+- Notice that the subtitle style comes from **Brand**.
 
-### 4.4 Tab `Descriptions`
+### 4.4 `Descriptions` tab
 
-Una descripción independiente por red social:
+One independent description per social network:
 
-- Tabs por red (Instagram, TikTok, YouTube, Facebook, LinkedIn, GMB), con dot verde si está habilitada.
-- Cada red tiene su propio toggle **Publish to X**, que determina si esa descripción saldrá al publicar.
-- Textarea con el copy editable (mono-espaciado, sin formato rich).
-- **Contador de caracteres** contra el límite específico de cada plataforma:
+- Tabs per network (Instagram, TikTok, YouTube, Facebook, LinkedIn, GMB), with a green dot when enabled.
+- Each network has its own **Publish to X** toggle that controls whether that description is sent on publish.
+- Editable textarea with the copy (monospaced, no rich formatting).
+- **Character counter** against each platform's specific limit:
   - Instagram / TikTok: 2,200
   - YouTube: 5,000
   - Facebook: 63,206
   - LinkedIn: 3,000
   - Google Business: 1,500
-- Barra inferior con **variables insertables** (`{{property_title}}`, `{{price}}`, etc. — ver [data/mock.js](data/mock.js) `variables`).
-- **Preview** en el lateral: tarjeta que simula cómo se verá ese post en la red seleccionada (`SocialPreviewCard`, en [components/SocialConfig.jsx](components/SocialConfig.jsx)).
-- Botón **Reset to template** para volver a la plantilla de la sección Social.
+- Footer bar with **insertable variables** (`{{property_title}}`, `{{price}}`, etc. — see `src/lib/api/mock/store.js` → `variables`).
+- Side **preview** that mocks how the post will look on the selected network (`SocialPreviewCard`, in `src/features/social/SocialPreviewCard.jsx`).
+- **Reset to template** button to fall back to the template defined in the Social page.
 
-### 4.5 Tab `Slides`
+### 4.5 `Slides` tab
 
-Slides extra que se pueden insertar/reordenar en el reel además de las fotos:
+Extra slides inserted into / reordered inside the reel alongside the photos:
 
-- **Intro video** (por defecto viene del Brand, se puede override por reel).
-- **Outro video** (idem, típicamente un CTA).
-- **Google review** — pide la URL de una reseña de Google; el modal `GoogleReviewModal` simula el *fetch* y devuelve autor, rating, fecha y texto. La plantilla visual de la slide es configurable (template, mostrar autor, mostrar fecha).
-- **Text slide** — texto plano sobre los colores de marca (ej. "New price!").
-- **Photo slide** — una única foto con caption.
+- **Intro video** (comes from Brand by default, can be overridden per reel).
+- **Outro video** (same, typically a CTA).
+- **Google review** — asks for a Google review URL; the `GoogleReviewModal` simulates a fetch and returns author, rating, date, and text. The visual template of the slide is configurable (template, show author, show date).
+- **Text slide** — plain text on brand colors (e.g. "New price!").
+- **Photo slide** — single photo with a caption.
 
-Cada slide tiene: toggle enabled, duración (slider 1–8s con step 0.5s), drag handle para reordenar y borrar. Chip "From defaults" si viene del Brand global.
+Each slide has: enabled toggle, duration (1–8s slider, step 0.5s), drag handle to reorder, and delete. "From defaults" chip if it came from the global Brand.
 
-### 4.6 Tab `Voiceover`
+### 4.6 `Voiceover` tab
 
-Dos modos excluyentes seleccionables en el switch superior:
+Two mutually-exclusive modes picked from the top switch:
 
-#### Modo `Record`
-Una "consola de grabación" con:
-- Meter de input (22 barras verde→amarillo→rojo) y selector de micro.
-- Botón **rec** grande con countdown 3-2-1, indicador REC pulsante, timer `m:ss`.
-- Opciones laterales:
-  - *Play reel while recording* (teleprompter con subtítulos).
-  - *Mute music during takes* (evita bleed).
-  - *Mic armed* (spacebar para start/stop).
-- **Lista de takes** con waveform, play, rename inline, descargar, borrar, y badge "Active" en el take que se usará al publicar.
+#### `Record` mode
+A "recording console" with:
+- Input meter (22 bars green→yellow→red) and mic selector.
+- Large **rec** button with 3-2-1 countdown, pulsing REC indicator, `m:ss` timer.
+- Side options:
+  - *Play reel while recording* (teleprompter with subtitles).
+  - *Mute music during takes* (avoids bleed).
+  - *Mic armed* (spacebar to start/stop).
+- **Takes list** with waveform, play, inline rename, download, delete, and an "Active" badge on the take that will be used at publish time.
 
-#### Modo `AI voice`
-- Selector de voz AI (6 voces: Emma IE, Liam IE, Niamh UK, Seán US, Carmen ES, Hugo ES — con gender/accent/tone y botón Preview).
-- Textarea con el guion (auto-poblado desde los subtítulos).
-- Botones **Copy from subtitles**, **Rewrite with AI**, **Preview voice**, **Generate voiceover**.
-- Estimación de duración según velocidad normal.
+#### `AI voice` mode
+- AI voice picker (6 voices: Emma IE, Conor IE, Ava UK, Noah US, Sofía ES, Mateo ES — each with gender/accent/tone and a Preview button).
+- Script textarea (auto-populated from the subtitles).
+- Buttons: **Copy from subtitles**, **Rewrite with AI**, **Preview voice**, **Generate voiceover**.
+- Duration estimate at normal pace.
 
-#### Mix (común a ambos modos)
-Tres sliders 0–100%:
+#### Mix (shared across both modes)
+Three 0–100% sliders:
 - Voice volume
 - Music volume
-- Music ducking — cuánto baja la música cuando hay voz.
+- Music ducking — how much music drops while voice is speaking.
 
-### 4.7 Header del editor
+### 4.7 Editor header
 
-Acciones globales: **Regenerate with AI**, **Export**, **Publish** (primario).
+Global actions: **Regenerate with AI**, **Export**, **Publish** (primary).
 
 ---
 
-## 5. Configuraciones globales del tenant
+## 5. Tenant-wide configuration
 
-### 5.1 Music — [components/MusicConfig.jsx](components/MusicConfig.jsx)
+### 5.1 Music — `src/features/music/`
 
-Dos sub-tabs.
+Two sub-tabs.
 
 #### 5.1.1 Library
-Tabla de tracks con:
-- Play inline (solo un track sonando a la vez).
-- Título + artista.
-- **Waveform** renderizada a partir del array `waveform` del track.
-- BPM, duración.
+Track table with:
+- Inline play (only one track plays at a time).
+- Title + artist.
+- **Waveform** rendered from the track's `waveform` array.
+- BPM, duration.
 - **Mood tags** (warm, energetic, cinematic, luxurious, modern, minimal, acoustic, relaxed).
-- **Property types** en los que se puede usar (luxury, family, rental).
-- **Favorite star** — solo los tracks marcados como favoritos entran en el pool de selección aleatoria. Favoritar mueve el track al tope de la lista.
-- Filtros: All / Favorites / por mood / búsqueda.
-- Subida de MP3 por drop/upload. **Aviso explícito** de no subir copyright.
+- **Property types** the track can be used for (luxury, family, rental).
+- **Favorite star** — only favorited tracks enter the random-selection pool. Favoriting moves the track to the top.
+- Filters: All / Favorites / by mood / search.
+- MP3 upload via drop/upload. **Explicit warning** about copyright.
 
 #### 5.1.2 Selection rules
-Dos bloques que determinan qué tracks puede elegir la AI para cada reel:
-- **Por tipo de propiedad** (Luxury / Family / Rental): lista de los favorites elegibles.
-- **Por estado** (For sale, Sale agreed, Sold, To let, Let agreed, Let) — match del *tono* al momento (ej. celebratorio para "Sold", tranquilo para "For sale").
-- **Fallback toggle**: si ninguna regla matchea, caer al pool completo de favorites en lugar de fallar el render.
+Two blocks that decide which tracks the AI can pick for each reel:
+- **By property type** (Luxury / Family / Rental): list of eligible favorites.
+- **By status** (For sale, Sale agreed, Sold, To let, Let agreed, Let) — match the *tone* to the moment (e.g. celebratory for "Sold", calm for "For sale").
+- **Fallback toggle**: if no rule matches, fall back to the full favorites pool instead of failing the render.
 
-### 5.2 Social — [components/SocialConfig.jsx](components/SocialConfig.jsx)
+### 5.2 Social — `src/features/social/`
 
-Página para:
-- Ver qué redes están conectadas (chips con handle real).
-- **Editar la plantilla de descripción** por red. Cada red arranca con un template por defecto (distinto tono según la plataforma — Instagram/Facebook más emojis, LinkedIn más formal, GMB una línea plana).
-- Las plantillas usan `{{variables}}` insertadas a golpe de click desde la barra de "tag chips" (con las variables del catálogo: `property_title`, `city`, `neighborhood`, `neighborhood_tag`, `price`, `bedrooms`, `bathrooms`, `size_m2`, `short_description`, `booking_link`, `agent_name`, `agent_phone`).
-- **Render highlighted**: los `{{tags}}` se pintan como pills dentro del texto para leer mejor.
-- **Preview lateral** por red con el `SocialPreviewCard` — reemplaza las variables con los samples reales y muestra cómo se verá el post.
-- Límite de caracteres por red aplicado (mismo mapping que en el editor).
+Page to:
+- See which networks are connected (chips with real handles).
+- **Edit the description template** per network. Each network starts with a default template with its own tone — Instagram/Facebook with more emoji, LinkedIn more formal, GMB a single flat line.
+- Templates use `{{variables}}` inserted on click from the tag-chip bar (catalog of variables: `property_title`, `city`, `neighborhood`, `neighborhood_tag`, `price`, `bedrooms`, `bathrooms`, `size_m2`, `short_description`, `booking_link`, `agent_name`, `agent_phone`).
+- **Highlighted rendering**: `{{tags}}` are drawn as pills inside the text for readability.
+- **Side preview** per network with `SocialPreviewCard` — replaces variables with real sample data and shows how the post will look.
+- Per-network character limit applied (same mapping as the editor).
 
-### 5.3 Brand — [components/BrandConfig.jsx](components/BrandConfig.jsx)
+### 5.3 Brand — `src/features/brand/BrandConfig.jsx`
 
-Define el look de *todos* los reels de esta agencia:
+Defines the look of *every* reel in this agency:
 
-- **Identity**: logo (PNG recomendado 512×512), nombre de la agencia (tagline), color primario, color secundario (color pickers), familia tipográfica de headings (Inter / Söhne / Manrope / Plus Jakarta Sans / Helvetica).
-- **Watermark**: toggle on/off, posición (4 esquinas), opacidad 30–100.
-- **Outro card**: toggle, headline + sub-line. Aparece en los últimos ~2s del reel.
-- **Preview 3:4 en vivo** a la derecha que muestra watermark + subtitle strip + outro con los cambios aplicados en tiempo real.
+- **Identity**: logo (PNG recommended 512×512), agency name (tagline), primary color, secondary color (color pickers), heading font (Inter / Söhne / Manrope / Plus Jakarta Sans / Helvetica).
+- **Watermark**: on/off toggle, position (4 corners), opacity 30–100.
+- **Outro card**: toggle, headline + sub-line. Shows in the last ~2s of the reel.
+- **Live 3:4 preview** on the right showing watermark + subtitle strip + outro reacting to changes in real time.
 
-### 5.4 Defaults — [components/ReelDefaultsConfig.jsx](components/ReelDefaultsConfig.jsx)
+### 5.4 Defaults — `src/features/defaults/`
 
-"Reel defaults / Customization". Seis sub-tabs a la izquierda, panel a la derecha. Todo lo que se fija aquí se aplica a cada reel nuevo, pero puede sobrescribirse desde el editor.
+"Reel defaults / Customization". Six sub-tabs in a left sidebar, panel on the right. Everything set here is applied to every new reel but can be overridden from the editor.
 
 #### 5.4.1 Format & locale
-- Moneda (EUR / USD / GBP / CAD / AUD) + posición del símbolo (prefix/suffix).
-- Separadores de miles y decimales.
-- Rounding de precio: Exact / Nearest 1K / Nearest 10K.
-- Formato de fecha (DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD, DD MMM YYYY, MMM DD YYYY).
-- Formato de hora 24h/12h.
+- Currency (EUR / USD / GBP / CAD / AUD) + symbol position (prefix/suffix).
+- Thousands and decimal separators.
+- Price rounding: Exact / Nearest 1K / Nearest 10K.
+- Date format (DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD, DD MMM YYYY, MMM DD YYYY).
+- Time format 24h/12h.
 - Timezone.
-- Idioma de interfaz (en-IE, en-GB, en-US, es-ES).
-- Sistema métrico vs. imperial (m² / km vs ft² / mi).
+- UI language (en-IE, en-GB, en-US, es-ES).
+- Metric vs. imperial unit system (m² / km vs ft² / mi).
 
-#### 5.4.2 Subtitles (estilo)
-- Tipografía: font, weight (500/600/700/800), tamaño (28–72 px).
-- Color de texto, mayúsculas sí/no, max chars por línea, alineación.
-- Fondo: None / Pill / Block / Outline, color, opacidad.
-- Posición vertical (top/middle/bottom).
-- **Karaoke word-highlight**: toggle y color — la palabra que está sonando se resalta.
+#### 5.4.2 Subtitles (style)
+- Typography: font, weight (500/600/700/800), size (28–72 px).
+- Text color, uppercase on/off, max chars per line, alignment.
+- Background: None / Pill / Block / Outline, color, opacity.
+- Vertical position (top/middle/bottom).
+- **Karaoke word-highlight**: toggle + color — the active word is highlighted as it's spoken.
 
 #### 5.4.3 Video & timing
 - **Aspect ratio**: 9:16, 3:4, 1:1, 4:5.
-- Resolución: 720p / 1080p / 1440p / 4K.
+- Resolution: 720p / 1080p / 1440p / 4K.
 - FPS: 24 / 30 / 60.
-- **Duration strategy**: Auto (por número de fotos) o rango fijo con min/max sliders.
-- **Transitions** entre escenas: Hard cut / Crossfade / Slide / Zoom.
-- Ken Burns toggle (pan & zoom suave por foto).
-- Intro / Outro cards toggles.
+- **Duration strategy**: Auto (by photo count) or fixed range with min/max sliders.
+- **Transitions** between scenes: Hard cut / Crossfade / Slide / Zoom.
+- Ken Burns toggle (gentle pan & zoom per photo).
+- Intro / Outro card toggles.
 
-#### 5.4.4 Intro & outro (piezas de video)
-- **Intro** y **Outro** con misma estructura: toggle enabled, source (uploaded / brand-card / none), duración, archivo con nombre/tamaño/duración.
-- **Rules**: Skip en rentals, skip si el reel es <15s, permitir a los agentes desactivarlos por reel.
+#### 5.4.4 Intro & outro (video pieces)
+- **Intro** and **Outro** share the same structure: enabled toggle, source (uploaded / brand-card / none), duration, file with name/size/duration.
+- **Rules**: Skip on rentals, skip when reel is shorter than 15s, allow agents to disable per reel.
 
 #### 5.4.5 Audio
-- Volumen de música (0–100).
+- Music volume (0–100).
 - Fade in / fade out toggles.
-- Duck on voice (bajar música cuando hay VO).
-- Voiceover enabled por defecto.
+- Duck on voice (lower music when VO is present).
+- Voiceover on by default.
 
 #### 5.4.6 Caption generation
-- Idioma de los subtítulos.
-- Caso (sentence / upper / lower).
-- Incluir emoji en subtítulos (sí/no).
+- Subtitle language.
+- Case (sentence / title / upper).
+- Include emoji in subtitles (on/off).
 
 ---
 
-## 6. Automation — [components/AutomationAdmin.jsx](components/AutomationAdmin.jsx)
+## 6. Automation — `src/features/automation/`
 
-**La decisión de negocio más importante** vive aquí. Dos modos mutuamente excluyentes, renderizados como tarjetas grandes:
+**The key product decision** lives here. Two mutually-exclusive modes rendered as large cards:
 
-### 6.1 Modo `Publish automatically`
-Hands-off: en cuanto el reel termina de renderizar, se publica. Pensado para agencias con alto volumen.
+### 6.1 `Publish automatically` mode
+Hands-off: as soon as the reel finishes rendering, it's published. Designed for agencies with high listing volume.
 
-Detalles configurables:
-- **Hold window** — mantener el reel N horas (30 min, 1h, 2h, 4h, 8h, 24h, o custom) antes de postear, como red de seguridad para cancelar/tweakear desde el dashboard.
-- **Quiet hours** (22:00 → 07:00) — reels que terminan de noche se postean a las 07:00.
-- **Skip weekends** — lo que termine sábado/domingo espera al lunes.
-- **Networks por defecto** — chips por red; desactivadas si la red no está conectada.
+Configurable details:
+- **Hold window** — hold the reel N hours (30 min, 1h, 2h, 4h, 8h, 24h, or custom) before posting as a cancellation/edit safety net from the dashboard.
+- **Quiet hours** (22:00 → 07:00) — reels finishing at night post at 07:00.
+- **Skip weekends** — anything finishing Saturday/Sunday waits for Monday.
+- **Default networks** — chips per network; disabled if the network isn't connected.
 
-### 6.2 Modo `Send email before publishing` (review-first)
-Cada reel aterriza en estado *Needs review* y un email va a la lista de destinatarios con botones **Approve & publish**, **Open editor**, **Reject** (1-click).
+### 6.2 `Send email before publishing` (review-first) mode
+Every reel lands in *Needs review* and an email goes to the recipient list with 1-click buttons **Approve & publish**, **Open editor**, **Reject**.
 
-Detalles:
-- Lista CSV de emails destinatarios.
-- **Preview** del email de aprobación — muestra exactamente lo que recibe el usuario.
-- Quiet hours también aplican al envío de emails.
+Details:
+- CSV list of recipient emails.
+- **Preview** of the approval email — shows exactly what the recipient sees.
+- Quiet hours also apply to email sending.
 
-### 6.3 Rendering defaults (común a ambos modos)
-- Auto-generar subtítulos.
-- Re-render al actualizar datos de la propiedad upstream (si GHL/WP cambian el precio o las fotos, volver a generar el reel).
+### 6.3 Rendering defaults (shared across both modes)
+- Auto-generate subtitles.
+- Re-render when property data changes upstream (if GHL/WP update price or photos, regenerate the reel).
 
 ---
 
-## 7. Admin (super-admin) — [components/AutomationAdmin.jsx](components/AutomationAdmin.jsx) + [components/AgencyDrawer.jsx](components/AgencyDrawer.jsx)
+## 7. Admin (super-admin) — `src/features/admin/`
 
-Vista solo para el operador de la plataforma (*tú*, no los agents de cada agencia).
+View for the platform operator (*you*, not each agency's agents).
 
-### 7.1 Métricas de plataforma
+### 7.1 Platform metrics
 - Active tenants.
-- MRR total.
-- Reels renderizados (30d).
-- % de renders fallidos.
+- Total MRR.
+- Reels rendered (30d).
+- % of failed renders.
 
-### 7.2 Tabla `Agencies`
-Listado de todos los tenants con: nombre + id, plan, seats, reels/30d, **estado de las dos fuentes** (GHL / WP como pills verde/rojo/amarillo), MRR, status (active / trial / paused), joined.
+### 7.2 `Agencies` table
+All tenants with: name + id, plan, seats, reels/30d, **status of both sources** (GHL / WP as green/red/yellow pills), MRR, status (active / trial / paused), joined.
 
-Click en fila → **AgencyDrawer** lateral.
+Click a row → **AgencyDrawer** side panel.
 
 ### 7.3 AgencyDrawer
 
-Drawer derecho de 680 px con tres tabs:
+Right-side drawer, 680 px wide, with three tabs:
 
 #### Sources
-Las dos fuentes de listados que el backend lee para generar reels. Credenciales **solo visibles para el super-admin**.
+The two listing sources the backend reads to generate reels. Credentials are **visible only to the super-admin**.
 
 - **GoHighLevel card**:
-  - Location ID (ej. `loc_ABCD1234`).
-  - API token (*private integration token*, estilo `pit-...`, con toggle mostrar/ocultar).
-  - Botón **Test connection** — valida que el token + location ID son buenos, actualiza `status` y `lastSync`.
-  - Mensaje de error inline si la conexión falla (ej. "401 Unauthorized — API key expired 3 days ago").
-  - Nota dónde se crea la clave en GHL: `Settings → Integrations → Private Integrations → Create new`.
+  - Location ID (e.g. `loc_ABCD1234`).
+  - API token (*private integration token*, `pit-…` style, with show/hide toggle).
+  - **Test connection** button — validates that the token + location ID are valid, updates `status` and `lastSync`.
+  - Inline error if the connection fails (e.g. "401 Unauthorized — API key expired 3 days ago").
+  - Hint for where the key is created in GHL: `Settings → Integrations → Private Integrations → Create new`.
 - **WordPress card**:
-  - URL (HTTPS obligatorio).
-  - Lee listados desde `/wp-json/wp/v2/`.
-  - *Application Password* oculto con toggle.
-  - Intervalo de polling (default 5 min).
-  - Test connection simulado.
-  - Mensajes de error típicos: "REST API returning 403 — Application Password rejected".
+  - URL (HTTPS required).
+  - Reads listings from `/wp-json/wp/v2/`.
+  - *Application Password* hidden with a toggle.
+  - Polling interval (default 5 min).
+  - Simulated test connection.
+  - Typical error messages: "REST API returning 403 — Application Password rejected".
 
 #### Billing
-Plan, MRR, seats, joined, next invoice, payment method. Botones **Open in Stripe** y **Change plan**.
+Plan, MRR, seats, joined, next invoice, payment method. **Open in Stripe** and **Change plan** buttons.
 
 #### Activity
-Log reciente de eventos: publicaciones, syncs, cambios de plan, altas de seats, etc.
+Recent event log: publishes, syncs, plan changes, seat additions, etc.
 
 ### 7.4 Invite agency
-Modal desde el header ("+ Invite agency") para dar de alta un tenant: nombre, admin name, admin email, toggle *Send magic-link invitation now*. Luego se configuran sus sources en el drawer.
+Modal from the header ("+ Invite agency") to add a new tenant: name, admin name, admin email, *Send magic-link invitation now* toggle. Its sources are configured afterwards in the drawer.
 
-### 7.5 Team & permissions — [components/AdminTeam.jsx](components/AdminTeam.jsx)
+### 7.5 Team & permissions — `src/features/admin/team/`
 
-> Nota: este panel está implementado pero aún no está enlazado desde `AdminView`. Es el módulo de gestión del equipo *dentro de una agencia* (no super-admin), y se montará cuando se añada sub-navegación al Admin.
+> Note: this panel is implemented but not yet wired into `AdminView`. It's the per-agency team management module (not super-admin) and will mount when sub-navigation is added to Admin.
 
-- **Security policy** (aplica a todos los miembros):
-  - Require 2FA (bloquea login hasta que cada miembro active 2FA; avisa cuántos no lo tienen).
-  - SSO on/off + provider (Google Workspace / Microsoft 365 · Azure AD / Okta SAML / Custom SAML) + dominio permitido.
+- **Security policy** (applies to every workspace member):
+  - Require 2FA (blocks login until each member enables 2FA; warns how many haven't).
+  - SSO on/off + provider (Google Workspace / Microsoft 365 · Azure AD / Okta SAML / Custom SAML) + allowed domain.
   - Session timeout (1h / 4h / 8h / 24h / 7d).
-  - Default role para usuarios SSO nuevos.
-- **Filtros por rol** (All / Admin / Editor / Viewer) con contadores, + "pending invites", + acceso al modal **View role permissions**.
-- **Tabla de miembros**: avatar, email, rol (editable inline), 2FA enabled/off, SSO linked/—, status (active/invited/suspended), last active.
-- **Selección múltiple** con acciones bulk: cambiar rol, eliminar.
-- **Invite members modal** — añade emails con rol.
-- **Edit user modal** — cambia rol, permite ver desc del rol.
-- **Role permissions modal** — matriz de permisos por módulo × rol (reels / publish / music / brand / automation / admin / api) con valores `rw` / `ro` / `none`. Tres roles fijos: **Admin** (rw en todo), **Editor** (rw en reels/publish/music/brand, ro en automation, none en admin/api), **Viewer** (ro en casi todo, none en publish/admin/api).
+  - Default role for SSO users.
+- **Role filters** (All / Admin / Editor / Viewer) with counters, + "pending invites", + access to the **View role permissions** modal.
+- **Members table**: avatar, email, role (inline editable), 2FA enabled/off, SSO linked/—, status (active/invited/suspended), last active.
+- **Multi-select** with bulk actions: change role, remove.
+- **Invite members modal** — adds emails with roles.
+- **Edit user modal** — change role, show role description.
+- **Role permissions modal** — matrix of permissions by module × role (reels / publish / music / brand / automation / admin / api) with values `rw` / `ro` / `none`. Three fixed roles: **Admin** (rw across everything), **Editor** (rw on reels/publish/music/brand, ro on automation, none on admin/api), **Viewer** (ro on almost everything, none on publish/admin/api).
 
 ---
 
 ## 8. Notification Settings
 
-Modal en [components/App.jsx](components/App.jsx) (`NotificationSettings`). Accesible desde el icono de campana en la topbar.
+Modal in `src/features/notifications/NotificationSettings.jsx`. Accessed from the bell icon in the topbar.
 
-- **Channels**: Email / Slack (`#listings`) / SMS (solo para failures urgentes). Toggle por canal.
-- **Recipients**: lista de destinatarios. Cada uno con su email, nombre, rol y *qué eventos quiere recibir*:
+- **Channels**: Email / Slack (`#listings`) / SMS (urgent failures only). Per-channel toggle.
+- **Recipients**: list of recipients. Each with email, name, role, and *which events they want to receive*:
   - Needs approval
   - Published
   - Failed render
-- Añadir nuevo email (Enter o botón Add).
-- Eliminar destinatario.
+- Add a new email (Enter or Add button).
+- Remove a recipient.
 - **Delivery frequency**: Instant / Hourly digest / Daily digest (09:00).
 
 ---
 
-## 9. Modelo de datos (mock)
+## 9. Data model (mock)
 
-Definido en [data/mock.js](data/mock.js). Los componentes acceden vía `window.MOCK`.
+Defined in `src/lib/api/mock/store.js`. Feature hooks surface it through the API client.
 
-| Entidad | Campos clave |
+| Entity | Key fields |
 |---|---|
 | `agency` | `name`, `tenantId`, `plan`, `logo`, `color` |
 | `socials[]` | `id`, `name`, `icon`, `color`, `connected`, `handle` (Instagram, TikTok, YouTube, Facebook, LinkedIn, Google Business) |
 | `reels[]` | `id`, `title`, `address`, `price`, `status`, `publishStatus`, `cover`, `createdAt`, `duration`, `scenes`, `music`, `kind` (for-sale/sale-agreed/sold/to-let/let-agreed/let), `type` (luxury/family/rental), `networks[]`, `tracker: { views, clicks, ctr, topNet, clicks7d[], clicks30d[] }` |
 | `tracks[]` | `id`, `title`, `artist`, `bpm`, `duration`, `mood[]`, `propertyTypes[]`, `statuses[]`, `favorite`, `waveform[]` |
-| `defaultBlocks[]` | bloques base de la descripción (title / emoji / price / features / text / cta / hashtags) |
-| `variables[]` | catálogo de tokens `{{...}}` disponibles |
-| `tenants[]` | agencias dadas de alta en la plataforma (super-admin) |
-| `team[]` | miembros del tenant activo con rol, 2FA, SSO, lastSeen |
-| `roles[]` | Admin / Editor / Viewer con matriz de permisos por módulo |
+| `variables[]` | catalog of `{{tag}}` placeholders |
+| `tenants[]` | agencies registered on the platform (super-admin) |
+| `team[]` | members of the active tenant with role, 2FA, SSO, lastSeen |
+| `roles[]` | Admin / Editor / Viewer with a per-module permission matrix |
 
 ---
 
-## 10. Tracking de links (analytics)
+## 10. Link tracking (analytics)
 
-Toda publicación que 4reels hace lleva un **short link** propio. Las métricas que el backend devuelve y el frontend ya visualiza:
+Every publish 4Reels performs carries a **short link** of its own. Metrics the backend returns and the frontend already visualizes:
 
-- `views` — impresiones del reel.
-- `clicks` — clicks al short link (CTAs, booking_link).
-- `ctr` — porcentaje, con semáforo en Dashboard: >1.5% verde, 1–1.5% amarillo, <1% gris.
-- `topNet` — la red de la que vienen más clicks.
-- `clicks7d[]` y `clicks30d[]` — series diarias que el sparkline del dashboard pinta.
+- `views` — reel impressions.
+- `clicks` — short-link clicks (CTAs, booking_link).
+- `ctr` — percentage, traffic-light on the Dashboard: >1.5% green, 1–1.5% yellow, <1% gray.
+- `topNet` — the network driving the most clicks.
+- `clicks7d[]` and `clicks30d[]` — daily series rendered by the dashboard sparkline.
 
-El `TrackerStats` card se integra en cada ReelCard y permite togglear entre 7d / 30d sin salir del dashboard.
-
----
-
-## 11. Theming, branding técnico y assets
-
-- Theming via CSS variables. Toggle claro/oscuro con `data-theme` en el `<html>`. Persistido en `localStorage`.
-- Fuentes **Inter** y **JetBrains Mono** empaquetadas localmente (via `@fontsource`, sin CDN).
-- Iconografía propia, stroke-based estilo Lucide, en [components/Icon.jsx](components/Icon.jsx). ~60 iconos.
-- **Assets estáticos** en `public/assets/` (logo de CK, fotos reales del piso de Cranford Court usadas como muestras, vídeo `reel.mp4` que reproduce en todos los previews) y `public/uploads/`.
+The `TrackerStats` card is embedded in every `ReelCard` and lets you toggle between 7d / 30d without leaving the dashboard.
 
 ---
 
-## 12. Integraciones de plataforma (lo que el backend debe cumplir)
+## 11. Theming, technical branding, and assets
 
-Resumiendo los contratos que el frontend *espera*:
+- Theming via CSS variables. Light/dark toggle sets `data-theme` on `<html>`. Persisted in `localStorage`.
+- **Inter** and **JetBrains Mono** fonts packaged locally (via `@fontsource`, no CDN).
+- Custom stroke-based iconography (Lucide-inspired) in `src/shared/Icon.jsx`. ~70 icons.
+- **Static assets** under `public/assets/` (CK logo, real photos of the Cranford Court apartment used as samples, `reel.mp4` shown in every preview) and `public/uploads/`.
 
-### 12.1 Ingesta
-- **GoHighLevel**: lectura de *opportunities/contacts/custom fields* via Private Integration Token + Location ID. Los campos que se consumen incluyen precio, fotos, descripción, estado del pipeline (ej. "Listed").
-- **WordPress**: lectura de Custom Post Type configurable (default `property`) via REST (`/wp-json/wp/v2/<cpt>`), autenticado con Application Password. Polling cada N minutos.
+---
+
+## 12. Platform integrations (what the backend must fulfill)
+
+Summary of the contracts the frontend *expects*:
+
+### 12.1 Ingestion
+- **GoHighLevel**: read *opportunities/contacts/custom fields* via Private Integration Token + Location ID. Fields consumed include price, photos, description, pipeline stage (e.g. "Listed").
+- **WordPress**: read a configurable Custom Post Type (default `property`) via REST (`/wp-json/wp/v2/<cpt>`), authenticated with an Application Password. Polling every N minutes.
 
 ### 12.2 Rendering
-- Input: fotos seleccionadas (+ AI scores) + subtítulos + música elegida + brand + defaults.
-- Output: MP4 3:4 (o el aspect ratio configurado) con subs quemados, intro/outro, watermark, música, voiceover opcional (mezcla con ducking).
+- Input: selected photos (+ AI scores) + subtitles + chosen music + brand + defaults.
+- Output: 3:4 MP4 (or the configured aspect ratio) with burned-in subtitles, intro/outro, watermark, music, optional voiceover (mixed with ducking).
 
-### 12.3 Publicación
-- APIs nativas de Instagram (Reels), TikTok, YouTube (Shorts), Facebook (Reels), LinkedIn, Google Business Profile.
-- Un short-link por publicación que redirige al `booking_link` y logea view/click.
+### 12.3 Publishing
+- Native APIs for Instagram (Reels), TikTok, YouTube (Shorts), Facebook (Reels), LinkedIn, Google Business Profile.
+- One short link per publish that redirects to the `booking_link` and logs views/clicks.
 
-### 12.4 Aprobaciones
-- Emails transaccionales con links firmados de 1 click: `approve`, `reject`, `open editor`.
+### 12.4 Approvals
+- Transactional emails with signed 1-click URLs: `approve`, `reject`, `open editor`.
 
-### 12.5 Webhooks salientes (futuros)
-- Eventos `reel.published`, `reel.failed`, `reel.needs_approval` — consumibles desde GHL para workflows downstream.
+### 12.5 Outgoing webhooks (future)
+- `reel.published`, `reel.failed`, `reel.needs_approval` events — consumable from GHL for downstream workflows.
 
 ---
 
-## 13. Estructura del código
+## 13. Code structure
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the full layer-by-layer breakdown. Short version:
 
 ```
-4reels (2)/
-├── index.html                      ← entry Vite
-├── src/
-│   ├── main.jsx                    ← imports React + fuentes + componentes en orden
-│   └── globals.js                  ← puente window.React / window.ReactDOM
-├── styles.css                      ← theme CSS (variables, componentes base)
-├── data/mock.js                    ← window.MOCK (datos de demo)
-├── components/
-│   ├── App.jsx                     ← shell: topbar + routing de tabs + NotificationSettings + TweaksPanel
-│   ├── Dashboard.jsx               ← listado de reels + TrackerStats + Sparkline + ReelCard
-│   ├── ReelEditor.jsx              ← editor con Photos / Subtitles / Descriptions / Slides / Voiceover
-│   ├── MusicConfig.jsx             ← library + rules
-│   ├── SocialConfig.jsx            ← conexiones + plantillas por red + SocialPreviewCard
-│   ├── BrandConfig.jsx             ← logo, colores, watermark, outro + preview en vivo
-│   ├── ReelDefaultsConfig.jsx      ← format / subs / video / intro-outro / audio / captions
-│   ├── AutomationAdmin.jsx         ← Automation (auto vs review) + Admin super-admin (Agencies)
-│   ├── AdminTeam.jsx               ← team & permissions + SSO/2FA policy + role matrix
-│   ├── AgencyDrawer.jsx            ← drawer por agencia: sources / billing / activity
-│   ├── Cover.jsx                   ← video/imagen placeholder para todos los previews
-│   ├── Icon.jsx                    ← ~60 iconos SVG inline
-│   └── UI.jsx                      ← primitives: Toggle, Checkbox, Avatar, Segmented, StatusBadge, KindBadge, SocialDot, EmptyBox
-└── public/
-    ├── assets/                     ← logo, fotos reales del listado de muestra, reel.mp4
-    └── uploads/                    ← sample uploads
+src/
+├── main.jsx, App.jsx              entry + providers
+├── app/                           shell, topbar, tab router, providers, postMessage protocol
+├── lib/                           api client + mock + generic hooks + utils
+├── shared/                        UI primitives (Icon, Cover, Toggle, …)
+├── features/                      one folder per product domain (reels, music, social, …)
+└── styles/                        vanilla CSS split by responsibility
 ```
 
-El proyecto corre sobre **Vite + React 18** (ver [package.json](package.json)). Las dependencias (React, ReactDOM, fuentes) se sirven desde `node_modules`, sin CDN.
+The project runs on **Vite + React 18** (see `package.json`). Dependencies (React, ReactDOM, fonts) are served from `node_modules`, no CDN.
 
 ---
 
-## 14. Lo que **no** existe todavía en el frontend
+## 14. What's **not** there yet in the frontend
 
-Para que no haya dudas de scope, esto aún no está wireado (pero el producto final lo necesitará):
+To keep scope honest, these aren't wired up (but the real product will need them):
 
-- Backend real — todo es mock; ningún botón persiste contra una API.
-- Auth real (login / logout / password reset) — la app asume usuario ya logueado.
-- Panel de facturación para el tenant (el super-admin sí lo ve desde el drawer).
-- Logs de errores de render para el agente (existen para el super-admin en Activity).
-- Panel de **Team** dentro de la vista Admin del tenant — el componente `AdminTeam` existe pero aún no está enlazado en la navegación.
-- Onboarding inicial de agencia (pantallas de setup por primera vez).
-- Tooltips/ayuda contextual uniformes.
+- Real backend — everything is mocked; no button persists to an actual API.
+- Real auth (login / logout / password reset) — the app assumes the user is already signed in.
+- Tenant-facing billing panel (the super-admin does see one from the drawer).
+- Render error logs for the agent (the super-admin has them in Activity).
+- **Team** panel inside the tenant's Admin view — the `AdminTeam` component exists but isn't wired into navigation.
+- Initial onboarding (first-time agency setup screens).
+- Consistent contextual help/tooltips.
 
 ---
 
-## 15. Glosario rápido
+## 15. Quick glossary
 
-- **Reel** — pieza de video vertical generada desde un listado.
-- **Scene / slide** — unidad dentro del reel; puede ser una foto con Ken Burns, un intro/outro, un text slide o una reseña de Google.
-- **Tenant / agency** — cliente de 4reels.
-- **Source** — origen de listados (GHL o WP).
+- **Reel** — vertical video generated from a listing.
+- **Scene / slide** — unit inside the reel; can be a photo with Ken Burns, an intro/outro, a text slide, or a Google review.
+- **Tenant / agency** — 4Reels customer.
+- **Source** — listing origin (GHL or WP).
 - **Publish mode** — auto vs review-first.
-- **Favorite track** — track musical elegible para selección automática.
-- **Hold window** — margen de cancelación/edición tras el render antes de postear.
-- **Ducking** — bajar música cuando hay voz.
-- **Karaoke highlight** — palabra actual resaltada en los subtítulos.
-- **Short link tracker** — link firmado que mide views/clicks por red.
+- **Favorite track** — music track eligible for automatic selection.
+- **Hold window** — cancellation/editing grace period after render and before posting.
+- **Ducking** — lowering music when voice is speaking.
+- **Karaoke highlight** — current word highlighted in subtitles.
+- **Short link tracker** — signed link that measures views/clicks per network.

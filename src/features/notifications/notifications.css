@@ -1,0 +1,76 @@
+/* Notifications settings modal. */
+
+.notif-section {
+  margin-bottom: 18px;
+}
+.notif-section-title {
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-5);
+}
+
+.notif-recipient {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--space-6);
+}
+.notif-recipient-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+.notif-recipient-email {
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.notif-recipient-meta {
+  font-size: var(--fs-11);
+  color: var(--text-muted);
+}
+.notif-recipient-events {
+  display: flex;
+  gap: var(--space-7);
+  flex-wrap: wrap;
+}
+
+.notif-freq {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-4);
+}
+.notif-freq-btn {
+  text-align: left;
+  padding: var(--space-6);
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  font-family: inherit;
+}
+.notif-freq-btn.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft-2);
+}
+.notif-freq-label {
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  color: var(--text);
+}
+.notif-freq-btn.selected .notif-freq-label { color: var(--accent); }
+.notif-freq-sub {
+  font-size: var(--fs-11);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+@media (max-width: 560px) {
+  .notif-freq { grid-template-columns: 1fr; }
+  .notif-recipient-events { gap: var(--space-5); }
+}

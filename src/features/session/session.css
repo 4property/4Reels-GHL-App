@@ -1,0 +1,10 @@
+/* Session provider fallbacks (shown while /me is loading or errored). */
+
+.session-fallback {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-size: var(--fs-13);
+}
+.session-fallback.loading { color: var(--text-muted); }
+.session-fallback.error { color: var(--danger); }

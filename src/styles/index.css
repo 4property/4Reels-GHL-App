@@ -1,0 +1,29 @@
+/* Barrel file — every global style module imported once, in order.
+ *
+ * Import order matters:
+ *   1. tokens   → CSS variables, consumed by everything below
+ *   2. reset    → element-level baseline
+ *   3. layout   → page chrome (topbar, tabs, .page)
+ *   4. surfaces → cards, tables, avatars, empty states
+ *   5. buttons  → button variants
+ *   6. forms    → inputs, selects, toggle, search
+ *   7. badges   → chips / pills overlaid on content
+ *   8. typography → text helpers
+ *   9. utilities → flex, gap, misc helpers
+ *
+ * Component-specific styles live next to the component (Foo.jsx + Foo.css)
+ * and are imported by the component, not from here. */
+
+@import './tokens.css';
+@import './reset.css';
+@import './layout.css';
+@import './surfaces.css';
+@import './buttons.css';
+@import './forms.css';
+@import './badges.css';
+@import './typography.css';
+@import './utilities.css';
+
+/* Shared component primitives (Avatar, Cover, Toggle, …). Kept in src/shared/
+ * but imported once here so tree-shaking of CSS isn't required. */
+@import '../shared/shared.css';
