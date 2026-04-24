@@ -1,8 +1,5 @@
 # ── Dependencies ────────────────────────────────────────────────────
 node_modules
-.pnp
-.pnp.js
-jspm_packages
 
 # ── Build output ────────────────────────────────────────────────────
 dist
@@ -19,9 +16,7 @@ logs
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
 # ── Environment / secrets ───────────────────────────────────────────
 # Keep .env.example committed (template); never commit real values.
@@ -31,7 +26,7 @@ lerna-debug.log*
 *.pem
 *.key
 
-# ── Local overrides ─────────────────────────────────────────────────
+# ── Local overrides (Vite picks these up automatically) ─────────────
 *.local
 
 # ── Caches ──────────────────────────────────────────────────────────
@@ -40,24 +35,22 @@ lerna-debug.log*
 .eslintcache
 .stylelintcache
 .npm
-.yarn/*
-!.yarn/patches
-!.yarn/releases
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
 
 # ── Test / coverage ─────────────────────────────────────────────────
 coverage
 *.lcov
 .nyc_output
 
-# ── Playwright (added with the capture script) ──────────────────────
+# ── Playwright ──────────────────────────────────────────────────────
+# Ignore per-run output. Visual baselines live next to each spec in a
+# `*-snapshots/` folder and MUST be committed — the negation below makes
+# that intent explicit so a stray rule can't silently drop them.
 test-results
 playwright-report
 blob-report
 playwright/.cache
-scripts/screenshots
+!tests/**/*-snapshots/
+!tests/**/*-snapshots/**
 
 # ── TypeScript (kept for when we add types) ─────────────────────────
 *.tsbuildinfo
@@ -68,11 +61,16 @@ scripts/screenshots
 !.vscode/extensions.json
 !.vscode/launch.json
 .idea
+.history
 *.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?
+
+# ── Scratch / temp ──────────────────────────────────────────────────
+tmp
+.tmp
+*.bak
+*.orig
+*.tgz
 
 # ── OS junk ─────────────────────────────────────────────────────────
 .DS_Store

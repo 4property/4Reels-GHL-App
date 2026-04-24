@@ -78,4 +78,19 @@ export default [
       },
     },
   },
+
+  // Playwright specs: the spec file itself runs in Node, but `page.evaluate`
+  // callbacks execute in the browser. Allow both globals so ESLint stops
+  // flagging `document` / `window` usage inside those callbacks.
+  {
+    files: ['tests/**/*.{js,mjs}'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+      },
+    },
+  },
 ];
